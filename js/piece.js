@@ -8,11 +8,6 @@ class Piece {
 
     constructor(ctx) {
         this.ctx = ctx;
-        this.spawn();
-    }
-
-    // spawn tetromino
-    spawn() {
         this.typeId = this.randomizeTetrominoTypes(COLORS.length - 1);
         this.color = COLORS[this.typeId];
         this.shape = SHAPES[this.typeId];

@@ -5,6 +5,7 @@ const ctxNext = canvasNext.getContext('2d');
 
 let requestId;
 
+// TODO: extract as account class
 const accountValues = {
     score: 0,
     level: 0,
@@ -37,13 +38,7 @@ const moves = {
     [KEY.UP]:    p => board.rotate(p)
 };
 
-const initNext = () => {
-    ctxNext.canvas.width = 4 * BLOCK_SIZE;
-    ctxNext.canvas.height = 4 * BLOCK_SIZE;
-    ctxNext.scale(BLOCK_SIZE, BLOCK_SIZE);
-};
-
-const addEventListener = () => {
+const keyDownEventListener = () => {
     // 'keydown' event is fired for all keys unlike 'keypress'
     document.addEventListener('keydown', event => {
         if (event.keyCode === KEY.P) {
@@ -108,11 +103,13 @@ const animate = (now = 0) => {
     // draw new state
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
     board.draw();
+
     requestId = requestAnimationFrame(animate);
 };
 
 const gameOver = () => {
     cancelAnimationFrame(requestId);
+
     ctx.fillStyle = 'black';
     ctx.fillRect(1, 3, 8, 1.2);
     ctx.font = '1px Arial';
@@ -137,6 +134,6 @@ const pause = () => {
     ctx.fillText('PAUSED', 3, 4);
 };
 
+// TODO: extract as onReady()
 let board = new Board(ctx, ctxNext);
-addEventListener();
-initNext();
+keyDownEventListener();

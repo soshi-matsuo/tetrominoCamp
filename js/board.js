@@ -19,6 +19,11 @@ class Board {
         this.ctx.canvas.height = ROWS * BLOCK_SIZE;
         // scale blocks
         this.ctx.scale(BLOCK_SIZE, BLOCK_SIZE);
+
+        // init next
+        ctxNext.canvas.width = 4 * BLOCK_SIZE;
+        ctxNext.canvas.height = 4 * BLOCK_SIZE;
+        ctxNext.scale(BLOCK_SIZE, BLOCK_SIZE);
     }
 
     // Reset the board when we start a new game
@@ -26,11 +31,13 @@ class Board {
         this.grid = this.getEmptyGrid();
         this.piece = new Piece(this.ctx);
         this.piece.setStartingPosition();
+
         this.getNewPiece();
     }
 
     getNewPiece() {
         this.next = new Piece(this.ctxNext);
+
         this.ctxNext.clearRect(0, 0, 
             this.ctxNext.canvas.width,
             this.ctxNext.canvas.height
@@ -43,6 +50,7 @@ class Board {
         this.drawBoard();
     }
 
+    // drop piece automatically for game loop
     drop() {
         let p = moves[KEY.DOWN](this.piece);
         if (this.valid(p)) {
