@@ -112,5 +112,5 @@ const pause = () => {
 };
 
 // TODO: extract as onReady()
-let board = new Board(ctx, ctxNext, account.updateByClearedLines, account.clearCtxNext);
-keyDownEventListener(account.addDropScore.bind(account));
+let board = new Board(ctx, ctxNext, account.updateByClearedLines.bind(account), account.clearCtxNext.bind(account));
+keyDownEventListener(account.addScore.bind(account));

@@ -36,16 +36,24 @@ class Account {
     };
 
     resetAccount() {
-        console.log('resetAccount');
-        console.log('this', this);
         this.setScore(0);
         this.setLevel(0);
         this.setLines(0);
     }
 
-    addDropScore(dropScore) {
-        const newScore = this.score + dropScore;
+    addScore(score) {
+        const newScore = this.score + score;
         this.setScore(newScore);
+    }
+
+    addLines(lines) {
+        const newLines = this.lines + lines;
+        this.setLines(newLines);
+    }
+
+    addLevel(level) {
+        const newLevel = this.level + level;
+        this.setLevel(newLevel);
     }
 
     initCtxNext() {
@@ -63,17 +71,16 @@ class Account {
 
     updateByClearedLines(clearedLines) {
         if (clearedLines <= 0) return;
-
         // calculate points from cleared lines and current level
-        this.score += this.getLinesClearedPoints(clearedLines);
-        this.lines += clearedLines;
+        this.addScore(this.getLinesClearedPoints(clearedLines));
+        this.addLines(clearedLines);
 
         // if it reached the lines for next level
         if (this.lines >= LINES_PER_LEVEL) {
-            this.level++;
+            this.addLevel(1);
 
             // remove account's lines so start next level
-            this.lines -= LINES_PER_LEVEL;
+            this.addLines(-1 * LINES_PER_LEVEL);
 
             // increase speed of game
             time.level = LEVEL[this.level];

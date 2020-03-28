@@ -1,8 +1,3 @@
-accountたちをクラスでまとめる
-- board.js ctxNextまわりもこっち
-- clearLinesの点数処理もこっち
-- getLinesClearPointsも	
-
 movesはmain.jsじゃないな、
 
 keyDownEventListnerをflexibleに
