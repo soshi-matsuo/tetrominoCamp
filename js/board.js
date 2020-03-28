@@ -6,11 +6,15 @@ class Board {
     next; // next piece
     requestId;
     time;
+    updateByClearedLines;
+    clearCtxNext;
 
-    constructor(ctx, ctxNext) {
+    constructor(ctx, ctxNext, updateByClearedLines, clearCtxNext) {
         this.ctx = ctx;
         this.ctxNext = ctxNext;
         this.init();
+        this.updateByClearedLines = updateByClearedLines;
+        this.clearCtxNext = clearCtxNext;
     }
 
     init() {
@@ -38,10 +42,7 @@ class Board {
     getNewPiece() {
         this.next = new Piece(this.ctxNext);
 
-        this.ctxNext.clearRect(0, 0, 
-            this.ctxNext.canvas.width,
-            this.ctxNext.canvas.height
-        );
+        this.clearCtxNext();
         this.next.draw();
     }
 
@@ -84,23 +85,7 @@ class Board {
                 this.grid.unshift(Array(COLS).fill(0));
             }
         });
-        // TODO:message with account
-        if (lines > 0) {
-            // calculate points from cleared lines and current level
-            account.score += this.getLinesClearedPoints(lines);
-            account.lines += lines;
-
-            // if it reached the lines for next level
-            if (account.lines >= LINES_PER_LEVEL) {
-                account.level++;
-
-                // remove account's lines so start next level
-                account.lines -= LINES_PER_LEVEL;
-
-                // increase speed of game
-                time.level = LEVEL[account.level];
-            }
-        }
+        this.updateByClearedLines(lines);
     }
 
     drawBoard() {
@@ -173,14 +158,5 @@ class Board {
         clone.shape.forEach(row => row.reverse());
 
         return clone;
-    }
-
-    getLinesClearedPoints(lines) {
-        const lineClearPoints = lines === 1 ? POINTS.SINGLE
-            : lines === 2 ? POINTS.DOUBLE
-            : lines === 3 ? POINTS.TRIPLE
-            : lines === 4 ? POINTS.TETRIS
-            : 0;
-        return (account.level + 1) * lineClearPoints;
     }
 }

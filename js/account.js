@@ -1,5 +1,4 @@
 class Account {
-
     ctxNext;
     score;
     level;
@@ -37,13 +36,16 @@ class Account {
     };
 
     resetAccount() {
+        console.log('resetAccount');
+        console.log('this', this);
         this.setScore(0);
         this.setLevel(0);
         this.setLines(0);
     }
 
     addDropScore(dropScore) {
-        this.setScore(dropScore);
+        const newScore = this.score + dropScore;
+        this.setScore(newScore);
     }
 
     initCtxNext() {

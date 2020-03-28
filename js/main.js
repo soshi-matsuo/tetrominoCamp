@@ -5,28 +5,7 @@ const ctxNext = canvasNext.getContext('2d');
 
 let requestId;
 
-// TODO: extract as account class
-const accountValues = {
-    score: 0,
-    level: 0,
-    lines: 0
-};
-
-const updateAccount = (key, value) => {
-    let element = document.getElementById(key);
-    if (element) {
-        element.textContent = value;
-    }
-};
-
-// this Proxy combines setting account's property with updating DOM
-const account = new Proxy(accountValues, {
-    set: (target, key, value) => {
-        target[key] = value;
-        updateAccount(key, value);
-        return true;
-    }
-});
+const account = new Account(ctxNext);
 
 // map key events to function to get the new state of the original piece
 // ex. const newP = this.moves[event.key](this.piece);
@@ -38,7 +17,7 @@ const moves = {
     [KEY.UP]:    p => board.rotate(p)
 };
 
-const keyDownEventListener = () => {
+const keyDownEventListener = (addScore) => {
     // 'keydown' event is fired for all keys unlike 'keypress'
     document.addEventListener('keydown', event => {
         if (event.keyCode === KEY.P) {
@@ -55,30 +34,28 @@ const keyDownEventListener = () => {
             if (event.keyCode === KEY.SPACE) {
                 // hard drop
                 while (board.valid(p)) {
-                    account.score += POINTS.HARD_DROP;
+                    addScore(POINTS.HARD_DROP);
                     board.piece.move(p);
                     p = moves[KEY.DOWN](board.piece);
                 }
             } else if (board.valid(p)){
                 board.piece.move(p);
                 if (event.keyCode === KEY.DOWN) {
-                    account.score += POINTS.SOFT_DROP;
+                    addScore(POINTS.SOFT_DROP);
                 }
             }
         }
     });
 };
 
-const resetGame = () => {
-    account.score = 0;
-    account.level = 0;
-    account.lines = 0;
+const resetGame = (resetAccount) => {
+    resetAccount();
     board.reset();
     time = { start: 0, elapsed: 0, level: LEVEL[account.level] };
-};
+}
 
 const play = () => {
-    resetGame();
+    resetGame(account.resetAccount.bind(account));
     time.start = performance.now();
     // if old game is running, cancel it
     if (requestId) cancelAnimationFrame(requestId);
@@ -135,5 +112,5 @@ const pause = () => {
 };
 
 // TODO: extract as onReady()
-let board = new Board(ctx, ctxNext);
-keyDownEventListener();
+let board = new Board(ctx, ctxNext, account.updateByClearedLines, account.clearCtxNext);
+keyDownEventListener(account.addDropScore.bind(account));
