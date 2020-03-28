@@ -1,16 +1,17 @@
+-- doing
+game masterとonready関数
+  [ ] let board ..とeventlistner呼び出しまとめる
+  [v] time含めglobalぽい変数の整理
+
+-- to do
 movesはmain.jsじゃないな、
 
 keyDownEventListnerをflexibleに
 
 対人戦に対応させたい
 
-time含めglobalぽい変数の整理
-
 animateの中を整理
 update, draw関数つくる
 gameOverもupdate, drawで処理わける
 gameOverしたらgame loopぬけても良いよ
 pauseもupdate, drawもわけようぜ
-game masterとonready関数
-
-let board ..とeventlistner呼び出しまとめる

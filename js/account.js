@@ -3,14 +3,17 @@ class Account {
     score;
     level;
     lines;
+    setTimeLevel;
 
-    constructor(ctxNext) {
+    constructor(ctxNext, setTimeLevel) {
         this.setScore(0);
         this.setLevel(0);
         this.setLines(0);
 
         this.ctxNext = ctxNext;
         this.initCtxNext();
+
+        this.setTimeLevel = setTimeLevel;
     }
 
     setScore(score) {
@@ -28,7 +31,7 @@ class Account {
         this.updateAccountDom('lines', lines);
     }
 
-    updateAccountDom = (key, value) => {
+    updateAccountDom(key, value) {
         let element = document.getElementById(key);
         if (element) {
             element.textContent = value;
@@ -57,9 +60,9 @@ class Account {
     }
 
     initCtxNext() {
-        ctxNext.canvas.width = 4 * BLOCK_SIZE;
-        ctxNext.canvas.height = 4 * BLOCK_SIZE;
-        ctxNext.scale(BLOCK_SIZE, BLOCK_SIZE);
+        this.ctxNext.canvas.width = 4 * BLOCK_SIZE;
+        this.ctxNext.canvas.height = 4 * BLOCK_SIZE;
+        this.ctxNext.scale(BLOCK_SIZE, BLOCK_SIZE);
     }
 
     clearCtxNext() {
@@ -83,7 +86,7 @@ class Account {
             this.addLines(-1 * LINES_PER_LEVEL);
 
             // increase speed of game
-            time.level = LEVEL[this.level];
+            this.setTimeLevel(LEVEL[this.level]);
         }
     }
 

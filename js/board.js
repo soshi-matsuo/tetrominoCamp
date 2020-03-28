@@ -25,9 +25,9 @@ class Board {
         this.ctx.scale(BLOCK_SIZE, BLOCK_SIZE);
 
         // init next
-        ctxNext.canvas.width = 4 * BLOCK_SIZE;
-        ctxNext.canvas.height = 4 * BLOCK_SIZE;
-        ctxNext.scale(BLOCK_SIZE, BLOCK_SIZE);
+        this.ctxNext.canvas.width = 4 * BLOCK_SIZE;
+        this.ctxNext.canvas.height = 4 * BLOCK_SIZE;
+        this.ctxNext.scale(BLOCK_SIZE, BLOCK_SIZE);
     }
 
     // Reset the board when we start a new game
