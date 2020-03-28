@@ -12,11 +12,11 @@ pauseもupdate, drawもわけようぜ
 対人戦に対応させたい
 
 -- done
-game masterとonready関数
+[v] game masterとonready関数
   [v] let board ..とeventlistner呼び出しまとめる
   [v] time含めglobalぽい変数の整理
 
-accountたちをクラスでまとめる
+[v] accountたちをクラスでまとめる
   [v] board.js ctxNextまわりもこっち
   [v] clearLinesの点数処理もこっち
   [v] getLinesClearPointsも
