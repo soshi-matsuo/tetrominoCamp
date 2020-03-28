@@ -84,7 +84,7 @@ class Board {
                 this.grid.unshift(Array(COLS).fill(0));
             }
         });
-
+        // TODO:message with account
         if (lines > 0) {
             // calculate points from cleared lines and current level
             account.score += this.getLinesClearedPoints(lines);
