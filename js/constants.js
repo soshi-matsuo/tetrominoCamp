@@ -4,6 +4,14 @@ const ROWS = 20;
 const BLOCK_SIZE = 30;
 const LINES_PER_LEVEL = 10;
 
+const GAME_STATES = {
+    READY: 0,
+    PLAYING: 1,
+    PAUSE: 2,
+    GAMEOVER: 3
+};
+Object.freeze(GAME_STATES);
+
 // map keys to their keycode to move the piece
 // freeze() convert Object into Enum with 'use strict'
 const KEY = {

@@ -1,17 +1,10 @@
-moves = {
-    [KEY.LEFT]:  p => ({ ...p, x: p.x - 1 }),
-    [KEY.RIGHT]: p => ({ ...p, x: p.x + 1 }),
-    [KEY.DOWN]:  p => ({ ...p, y: p.y + 1 }),
-    [KEY.SPACE]: p => ({ ...p, y: p.y + 1 }),
-    [KEY.UP]:    () => {}
-};
-
 class GameMaster {
     canvas;
     ctx;
     canvasNext;
     ctxNext;
     requestId;
+    gameState;
 
     account;
     time;
@@ -23,6 +16,7 @@ class GameMaster {
         this.canvasNext = document.getElementById('next');
         this.ctxNext = this.canvasNext.getContext('2d');
         this.requestId = null;
+        this.gameState = GAME_STATES.READY;
 
         this.time = { 
             start: 0, 
@@ -48,7 +42,7 @@ class GameMaster {
         this.time.start = performance.now();
         // if old game is running, cancel it
         if (this.requestId) cancelAnimationFrame(this.requestId);
-    
+        this.gameState = GAME_STATES.PLAYING;
         this.loopGame();
     }
 
@@ -82,28 +76,34 @@ class GameMaster {
     keyDownEventListener(addScore) {
         // 'keydown' event is fired for all keys unlike 'keypress'
         document.addEventListener('keydown', event => {
-            if (event.keyCode === KEY.P) {
+            const pausable = this.gameState == GAME_STATES.PLAYING || 
+                            this.gameState == GAME_STATES.PAUSE;
+            if (event.keyCode === KEY.P && pausable) {
                 this.pause();
             }
-            if (event.keyCode === KEY.ESC) {
+            if (event.keyCode === KEY.ESC && this.gameState == GAME_STATES.PLAYING) {
                 this.gameOver();
-            } else if (moves[event.keyCode]) {
+            } 
+            if (this.gameState == GAME_STATES.PLAYING) {
                 // stop the event user activates
                 event.preventDefault();
-                // get new state of current piece
-                let p = moves[event.keyCode](this.board.piece);
-        
+
+                if (event.keyCode === KEY.LEFT) {
+                    this.board.movePiece(-1, 0);
+                } 
+                if (event.keyCode === KEY.RIGHT) {
+                    this.board.movePiece(1, 0);
+                }
+                if (event.keyCode === KEY.DOWN) {
+                    this.board.movePiece(0, 1);
+                    addScore(POINTS.SOFT_DROP);
+                }
+                if (event.keyCode === KEY.UP) {
+                    this.board.rotate();
+                }
                 if (event.keyCode === KEY.SPACE) {
-                    // hard drop
-                    while (this.board.valid(p)) {
+                    while (this.board.movePiece(0, 1)) {
                         addScore(POINTS.HARD_DROP);
-                        this.board.piece.move(p);
-                        p = moves[KEY.DOWN](this.board.piece);
-                    }
-                } else if (this.board.valid(p)){
-                    this.board.piece.move(p);
-                    if (event.keyCode === KEY.DOWN) {
-                        addScore(POINTS.SOFT_DROP);
                     }
                 }
             }
@@ -112,6 +112,7 @@ class GameMaster {
     
     gameOver() {
         cancelAnimationFrame(this.requestId);
+        this.gameState = GAME_STATES.GAMEOVER;
     
         this.ctx.fillStyle = 'black';
         this.ctx.fillRect(1, 3, 8, 1.2);
@@ -121,8 +122,10 @@ class GameMaster {
     }
     
     pause() {
+        this.gameState = GAME_STATES.PAUSE;
         // pause state is toggled by P key?
         if (!this.requestId) {
+            this.gameState = GAME_STATES.PLAYING;
             this.loopGame();
             return;
         }
@@ -139,7 +142,6 @@ class GameMaster {
 }
 
 const gameMaster = new GameMaster();
-moves[KEY.UP] = p => gameMaster.board.rotate(p);
 const play = () => {
     if (gameMaster === undefined) return;
     gameMaster.start();

@@ -51,23 +51,52 @@ class Board {
         this.drawBoard();
     }
 
+    movePiece(horizontal, vertical) {
+        const newPiece = {...this.piece};
+        newPiece.x += horizontal;
+        newPiece.y += vertical;
+
+        if (this.valid(newPiece)) {
+            this.piece.move(newPiece);
+            return true;
+        }
+        return false;
+    }
+
+    // rotate piece clockwise
+    rotate() {
+        // copy p deeply with JSON for immutability
+        let clone = JSON.parse(JSON.stringify(this.piece));
+
+        // transpose piece
+        for (let y = 0; y < clone.shape.length; y++) {
+            for (let x = 0; x < y; x++) {
+                [clone.shape[x][y], clone.shape[y][x]] = [clone.shape[y][x], clone.shape[x][y]];
+            }
+        }
+        // reverse the order of the colmuns
+        clone.shape.forEach(row => row.reverse());
+
+        if (this.valid(clone)) {
+            this.piece.move(clone);
+        }
+    }
+
     // drop piece automatically for game loop
     drop() {
-        let p = moves[KEY.DOWN](this.piece);
-        if (this.valid(p)) {
-            this.piece.move(p);
-        } else {
-            this.freeze();
-            this.clearLines();
-            if (this.piece.y === 0) {
-                // Game Over
-                return false;
-            }
-            this.piece = this.next;
-            this.piece.ctx = this.ctx;
-            this.piece.setStartingPosition();
-            this.getNewPiece();
+        if (this.movePiece(0, 1)) return true;
+        
+        this.freeze();
+        this.clearLines();
+        if (this.piece.y === 0) {
+            // Game Over
+            return false;
         }
+        this.piece = this.next;
+        this.piece.ctx = this.ctx;
+        this.piece.setStartingPosition();
+        this.getNewPiece();
+
         return true;
     }
 
@@ -141,22 +170,5 @@ class Board {
                 );
             });
         });
-    }
-
-    // rotate piece clockwise
-    rotate(p) {
-        // copy p deeply with JSON for immutability
-        let clone = JSON.parse(JSON.stringify(p));
-
-        // transpose piece
-        for (let y = 0; y < clone.shape.length; y++) {
-            for (let x = 0; x < y; x++) {
-                [clone.shape[x][y], clone.shape[y][x]] = [clone.shape[y][x], clone.shape[x][y]];
-            }
-        }
-        // reverse the order of the colmuns
-        clone.shape.forEach(row => row.reverse());
-
-        return clone;
     }
 }
