@@ -1,14 +1,6 @@
 -- doing
 
-
 -- to do
-
-animateの中を整理
-update, draw関数つくる
-gameOverもupdate, drawで処理わける
-gameOverしたらgame loopぬけても良いよ
-pauseもupdate, drawもわけようぜ
-
 対人戦に対応させたい
 
 -- done
@@ -23,3 +15,9 @@ pauseもupdate, drawもわけようぜ
 
 [v] movesはmain.jsじゃないな
 [v] keyDownEventListnerをflexibleに
+
+animateの中を整理
+  [v] update, draw関数つくる
+  [v] gameOverもupdate, drawで処理わける
+  [v] gameOverしたらgame loopぬけても良いよ
+  [v] pauseもupdate, drawもわけようぜ

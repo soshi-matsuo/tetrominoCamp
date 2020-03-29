@@ -29,6 +29,16 @@ class GameMaster {
             },
             setLevel: (level) => {
                 this.time.level = level;
+            },
+            update: (now) => {
+                this.time.elapsed = now - this.time.start;
+            },
+            isElapsedEnough: (now) => {
+                const elapsed = this.time.elapsed > this.time.level;
+                if (elapsed) {
+                    this.time.start = now;
+                }
+                return elapsed;
             }
         };
         this.account = new Account(this.ctxNext, this.time.setLevel.bind(this));
@@ -52,24 +62,56 @@ class GameMaster {
         this.time.init();
     }
 
-    loopGame(now = 0) {
-        // update elapsed time
-        this.time.elapsed = now - this.time.start;
-    
-        // if elapsed time has passed time for current level
-        if (this.time.elapsed > this.time.level) {
-            // restart counting from now
-            this.time.start = now;
-            if (!this.board.drop()) {
-                this.gameOver();
-                return;
-            }
+    update(now) {
+        switch(this.gameState) {
+            case GAME_STATES.READY:
+                break;
+            case GAME_STATES.PLAYING:
+                this.time.update(now);
+                if (!this.time.isElapsedEnough(now)) return;
+                const dropped = this.board.drop();
+                if (!dropped) {
+                    this.gameOver();
+                    return;
+                }
+                break;
+            case GAME_STATES.PAUSE:
+                break;
+            case GAME_STATES.GAMEOVER:
+                break;
+            default:
+                break; 
         }
-    
-        // draw new state
+    }
+
+    flip() {
         this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
-        this.board.draw();
-    
+    }
+
+    draw() {
+        switch(this.gameState) {
+            case GAME_STATES.READY:
+                break;
+            case GAME_STATES.PLAYING:
+                this.board.draw();
+                break;
+            case GAME_STATES.PAUSE:
+                this.board.draw();
+                this.drawPause(this.ctx);
+                break;
+            case GAME_STATES.GAMEOVER:
+                this.board.draw();
+                this.drawGameOver(this.ctx);
+                break;
+            default:
+                break;
+        }
+    }
+
+    loopGame(now = 0) {
+        this.update(now);
+        this.flip();
+        this.draw();
         this.requestId = requestAnimationFrame(this.loopGame.bind(this));
     }
 
@@ -111,33 +153,31 @@ class GameMaster {
     }
     
     gameOver() {
-        cancelAnimationFrame(this.requestId);
         this.gameState = GAME_STATES.GAMEOVER;
-    
-        this.ctx.fillStyle = 'black';
-        this.ctx.fillRect(1, 3, 8, 1.2);
-        this.ctx.font = '1px Arial';
-        this.ctx.fillStyle = 'red';
-        this.ctx.fillText('GAME OVER', 1.8, 4);
+    }
+
+    drawGameOver(ctx) {
+        ctx.fillStyle = 'black';
+        ctx.fillRect(1, 3, 8, 1.2);
+        ctx.font = '1px Arial';
+        ctx.fillStyle = 'red';
+        ctx.fillText('GAME OVER', 1.8, 4);
     }
     
     pause() {
-        this.gameState = GAME_STATES.PAUSE;
-        // pause state is toggled by P key?
-        if (!this.requestId) {
+        if (this.gameState == GAME_STATES.PLAYING)
+            this.gameState = GAME_STATES.PAUSE;
+        else if (this.gameState == GAME_STATES.PAUSE)
             this.gameState = GAME_STATES.PLAYING;
-            this.loopGame();
-            return;
-        }
+        console.log(this.gameState);
+    }
     
-        cancelAnimationFrame(this.requestId);
-        this.requestId = null;
-    
-        this.ctx.fillStyle = 'black';
-        this.ctx.fillRect(1, 3, 8, 1.2);
-        this.ctx.font = '1px Arial';
-        this.ctx.fillStyle = 'yellow';
-        this.ctx.fillText('PAUSED', 3, 4);
+    drawPause(ctx) {
+        ctx.fillStyle = 'black';
+        ctx.fillRect(1, 3, 8, 1.2);
+        ctx.font = '1px Arial';
+        ctx.fillStyle = 'yellow';
+        ctx.fillText('PAUSED', 3, 4);
     }
 }
 
