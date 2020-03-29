@@ -2,6 +2,33 @@
 
 -- to do
 対人戦に対応させたい
+  turn system（プレイヤーが交代する）
+  盤面は共有したままテトリスをプレイしていく
+  GAMEOVER段階で、自分が残したミノが多いor少ない側の勝ち
+  
+  ex user story
+  - push play
+  - while continuing game
+    - place tetromino
+    - turn change
+    - place tetromino by opponent
+    - turn change
+  - if game is over
+    - count minos
+    - determine winner
+
+  --> have to implement
+  - no scoring
+  - turn change
+    - separate key for player1, 2(arrow, wasd)
+    - separate piece for players
+      - coloring
+      - spawn mino per player
+      - 1 next mino 
+  - count minos
+    - count each values in grid
+  - determine winner
+    - compare counts
 
 -- done
 [v] game masterとonready関数
