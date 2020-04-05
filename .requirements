@@ -1,6 +1,6 @@
 -- doing
-refactor keyInputHandler
-  - generalize GameMaster.commands
+  - no scoring
+    - organize DOM
       
 -- to do
 対人戦に対応させたい
@@ -29,7 +29,6 @@ refactor keyInputHandler
     - count each values in grid
   - determine winner
     - compare counts
-  - no scoring
 
 -- done
 [v] game masterとonready関数
@@ -44,13 +43,15 @@ refactor keyInputHandler
 [v] movesはmain.jsじゃないな
 [v] keyDownEventListnerをflexibleに
 
-animateの中を整理
+[v] animateの中を整理
   [v] update, draw関数つくる
   [v] gameOverもupdate, drawで処理わける
   [v] gameOverしたらgame loopぬけても良いよ
   [v] pauseもupdate, drawもわけようぜ
 
-- separate key for player1, 2(arrow, wasd)
-    [v] 1. simply add if sentence
-    [v] 2. make class for keyEventListner
-      [v] - switch accept keys by some trigger
+[v] separate key for player1, 2(arrow, wasd)
+  [v] 1. simply add if sentence
+  [v] 2. make class for keyEventListner
+    [v] switch accept keys by some trigger
+  [v] refactor keyInputHandler
+    [v] generalize GameMaster.commands

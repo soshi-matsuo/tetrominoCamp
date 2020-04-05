@@ -47,80 +47,46 @@ class GameMaster {
             }
         };
         this.account = new Account(this.ctxNext, this.time.setLevel.bind(this));
+        this.board = new Board(this.ctx, this.ctxNext, this.account.updateByClearedLines.bind(this.account), this.account.clearCtxNext.bind(this.account));
         
         this.commands = {
             addScore: this.account.addScore.bind(this.account),
-            player1Commands: (event) => {
-                const pausable = this.gameState == GAME_STATES.PLAYING || 
-                            this.gameState == GAME_STATES.PAUSE;
-                if (event.keyCode === KEY.P && pausable) {
-                    this.pause();
+            hardDrop: (() => {
+                while (this.board.movePiece(0, 1)) {
+                    this.commands.addScore(POINTS.HARD_DROP);
                 }
-                if (event.keyCode === KEY.ESC && this.gameState == GAME_STATES.PLAYING) {
-                    this.gameOver();
-                } 
-                if (this.gameState == GAME_STATES.PLAYING && this.turn == TURN.PLAYER1) {
-                    // stop the event user activates
-                    event.preventDefault();
-
-                    if (event.keyCode === KEY.LEFT) {
-                        this.board.movePiece(-1, 0);
-                    } 
-                    if (event.keyCode === KEY.RIGHT) {
-                        this.board.movePiece(1, 0);
-                    }
-                    if (event.keyCode === KEY.DOWN) {
-                        this.board.movePiece(0, 1);
-                        this.commands.addScore(POINTS.SOFT_DROP);
-                    }
-                    if (event.keyCode === KEY.UP) {
-                        this.board.rotate();
-                    }
-                    if (event.keyCode === KEY.SPACE) {
-                        while (this.board.movePiece(0, 1)) {
-                            this.commands.addScore(POINTS.HARD_DROP);
-                        }
-                    }
-                }
+            }).bind(this),
+            softDrop: (() => {
+                this.board.movePiece(0, 1);
+                this.commands.addScore(POINTS.SOFT_DROP);
+            }).bind(this),
+            player1: {
+                up: this.board.rotate.bind(this.board),
+                left: this.board.movePiece.bind(this.board, -1, 0),
+                down: () => {this.commands.softDrop();},
+                right: this.board.movePiece.bind(this.board, 1, 0),
+                space: () => {this.commands.hardDrop();},
+                p: this.pause.bind(this),
+                esc: this.gameOver.bind(this),
             },
-            player2Commands: (event) => {
-                const pausable = this.gameState == GAME_STATES.PLAYING || 
-                            this.gameState == GAME_STATES.PAUSE;
-                if (event.keyCode === KEY.P && pausable) {
-                    this.pause();
-                }
-                if (event.keyCode === KEY.ESC && this.gameState == GAME_STATES.PLAYING) {
-                    this.gameOver();
-                } 
-                if (this.gameState == GAME_STATES.PLAYING && this.turn == TURN.PLAYER2) {
-                    // stop the event user activates
-                    event.preventDefault();
-
-                    if (event.keyCode === KEY.A) {
-                        this.board.movePiece(-1, 0);
-                    } 
-                    if (event.keyCode === KEY.D) {
-                        this.board.movePiece(1, 0);
-                    }
-                    if (event.keyCode === KEY.S) {
-                        this.board.movePiece(0, 1);
-                        this.commands.addScore(POINTS.SOFT_DROP);
-                    }
-                    if (event.keyCode === KEY.W) {
-                        this.board.rotate();
-                    }
-                    if (event.keyCode === KEY.SPACE) {
-                        while (this.board.movePiece(0, 1)) {
-                            this.commands.addScore(POINTS.HARD_DROP);
-                        }
-                    }
-                }
+            player2: {
+                w: this.board.rotate.bind(this.board),
+                a: this.board.movePiece.bind(this.board, -1, 0),
+                s: () => {this.commands.softDrop();},
+                d: this.board.movePiece.bind(this.board, 1, 0),
+                space: () => {this.commands.hardDrop();},
+                p: this.pause.bind(this),
+                esc: this.gameOver.bind(this),
+            },
+            pause: {
+                p: this.pause.bind(this),
+            },
+            gameOver: {
+                esc: this.gameOver.bind(this),
             }
         };
 
-        this.board = new Board(this.ctx, this.ctxNext, this.account.updateByClearedLines.bind(this.account), this.account.clearCtxNext.bind(this.account));
-        this.keyInputHandler = new KeyInputHandler(this.commands.player1Commands.bind(this));
-        this.keyInputHandler.registerEventListener();
+        this.keyInputHandler = new KeyInputHandler(this.commands.player1);
     }
 
     start() {
@@ -137,6 +103,7 @@ class GameMaster {
         this.board.reset();
         this.time.init();
         this.turn = TURN.PLAYER1;
+        this.keyInputHandler.setCommands(this.commands.player1);
     }
 
     update(now) {
@@ -194,15 +161,16 @@ class GameMaster {
 
     switchTurn() {
         if (this.turn == TURN.PLAYER1) {
-            this.keyInputHandler.switchEventListener(this.commands.player2Commands.bind(this));
+            this.keyInputHandler.setCommands(this.commands.player2);
         } else {
-            this.keyInputHandler.switchEventListener(this.commands.player1Commands.bind(this));
+            this.keyInputHandler.setCommands(this.commands.player1);
         }
         this.turn = (this.turn + 1) % 2;
     }
     
     gameOver() {
         this.gameState = GAME_STATES.GAMEOVER;
+        this.keyInputHandler.setCommands(this.commands.gameOver);
     }
 
     drawGameOver(ctx) {
@@ -214,11 +182,17 @@ class GameMaster {
     }
     
     pause() {
-        if (this.gameState == GAME_STATES.PLAYING)
+        if (this.gameState == GAME_STATES.PLAYING) {
             this.gameState = GAME_STATES.PAUSE;
-        else if (this.gameState == GAME_STATES.PAUSE)
+            this.keyInputHandler.setCommands(this.commands.pause);
+        }
+        else if (this.gameState == GAME_STATES.PAUSE) {
             this.gameState = GAME_STATES.PLAYING;
-        console.log(this.gameState);
+            if (this.turn == TURN.PLAYER1)
+                this.keyInputHandler.setCommands(this.commands.player1);
+            else
+                this.keyInputHandler.setCommands(this.commands.player2);
+        }
     }
     
     drawPause(ctx) {
