@@ -6,11 +6,13 @@ class GameMaster {
     requestId;
     gameState;
     turn;
-
+    commands;
+    
     account;
     time;
     board;
-
+    keyInputHandler;
+    
     constructor() {
         this.canvas = document.getElementById('board');
         this.ctx = this.canvas.getContext('2d');
@@ -19,7 +21,8 @@ class GameMaster {
         this.requestId = null;
         this.gameState = GAME_STATES.READY;
         this.turn = TURN.PLAYER1;
-
+        
+        
         this.time = { 
             start: 0, 
             elapsed: 0, 
@@ -45,8 +48,79 @@ class GameMaster {
         };
         this.account = new Account(this.ctxNext, this.time.setLevel.bind(this));
         
+        this.commands = {
+            addScore: this.account.addScore.bind(this.account),
+            player1Commands: (event) => {
+                const pausable = this.gameState == GAME_STATES.PLAYING || 
+                            this.gameState == GAME_STATES.PAUSE;
+                if (event.keyCode === KEY.P && pausable) {
+                    this.pause();
+                }
+                if (event.keyCode === KEY.ESC && this.gameState == GAME_STATES.PLAYING) {
+                    this.gameOver();
+                } 
+                if (this.gameState == GAME_STATES.PLAYING && this.turn == TURN.PLAYER1) {
+                    // stop the event user activates
+                    event.preventDefault();
+
+                    if (event.keyCode === KEY.LEFT) {
+                        this.board.movePiece(-1, 0);
+                    } 
+                    if (event.keyCode === KEY.RIGHT) {
+                        this.board.movePiece(1, 0);
+                    }
+                    if (event.keyCode === KEY.DOWN) {
+                        this.board.movePiece(0, 1);
+                        this.commands.addScore(POINTS.SOFT_DROP);
+                    }
+                    if (event.keyCode === KEY.UP) {
+                        this.board.rotate();
+                    }
+                    if (event.keyCode === KEY.SPACE) {
+                        while (this.board.movePiece(0, 1)) {
+                            this.commands.addScore(POINTS.HARD_DROP);
+                        }
+                    }
+                }
+            },
+            player2Commands: (event) => {
+                const pausable = this.gameState == GAME_STATES.PLAYING || 
+                            this.gameState == GAME_STATES.PAUSE;
+                if (event.keyCode === KEY.P && pausable) {
+                    this.pause();
+                }
+                if (event.keyCode === KEY.ESC && this.gameState == GAME_STATES.PLAYING) {
+                    this.gameOver();
+                } 
+                if (this.gameState == GAME_STATES.PLAYING && this.turn == TURN.PLAYER2) {
+                    // stop the event user activates
+                    event.preventDefault();
+
+                    if (event.keyCode === KEY.A) {
+                        this.board.movePiece(-1, 0);
+                    } 
+                    if (event.keyCode === KEY.D) {
+                        this.board.movePiece(1, 0);
+                    }
+                    if (event.keyCode === KEY.S) {
+                        this.board.movePiece(0, 1);
+                        this.commands.addScore(POINTS.SOFT_DROP);
+                    }
+                    if (event.keyCode === KEY.W) {
+                        this.board.rotate();
+                    }
+                    if (event.keyCode === KEY.SPACE) {
+                        while (this.board.movePiece(0, 1)) {
+                            this.commands.addScore(POINTS.HARD_DROP);
+                        }
+                    }
+                }
+            }
+        };
+
         this.board = new Board(this.ctx, this.ctxNext, this.account.updateByClearedLines.bind(this.account), this.account.clearCtxNext.bind(this.account));
-        this.keyDownEventListener(this.account.addScore.bind(this.account));
+        this.keyInputHandler = new KeyInputHandler(this.commands.player1Commands.bind(this));
+        this.keyInputHandler.registerEventListener();
     }
 
     start() {
@@ -118,71 +192,12 @@ class GameMaster {
         this.requestId = requestAnimationFrame(this.loopGame.bind(this));
     }
 
-    keyDownEventListener(addScore) {
-        // 'keydown' event is fired for all keys unlike 'keypress'
-        document.addEventListener('keydown', event => {
-            const pausable = this.gameState == GAME_STATES.PLAYING || 
-                            this.gameState == GAME_STATES.PAUSE;
-            if (event.keyCode === KEY.P && pausable) {
-                this.pause();
-            }
-            if (event.keyCode === KEY.ESC && this.gameState == GAME_STATES.PLAYING) {
-                this.gameOver();
-            } 
-
-            // player1
-            if (this.gameState == GAME_STATES.PLAYING && this.turn == TURN.PLAYER1) {
-                // stop the event user activates
-                event.preventDefault();
-
-                if (event.keyCode === KEY.LEFT) {
-                    this.board.movePiece(-1, 0);
-                } 
-                if (event.keyCode === KEY.RIGHT) {
-                    this.board.movePiece(1, 0);
-                }
-                if (event.keyCode === KEY.DOWN) {
-                    this.board.movePiece(0, 1);
-                    addScore(POINTS.SOFT_DROP);
-                }
-                if (event.keyCode === KEY.UP) {
-                    this.board.rotate();
-                }
-                if (event.keyCode === KEY.SPACE) {
-                    while (this.board.movePiece(0, 1)) {
-                        addScore(POINTS.HARD_DROP);
-                    }
-                }
-            }
-
-            // player2
-            if (this.gameState == GAME_STATES.PLAYING && this.turn == TURN.PLAYER2) {
-                // stop the event user activates
-                event.preventDefault();
-
-                if (event.keyCode === KEY.A) {
-                    this.board.movePiece(-1, 0);
-                } 
-                if (event.keyCode === KEY.D) {
-                    this.board.movePiece(1, 0);
-                }
-                if (event.keyCode === KEY.S) {
-                    this.board.movePiece(0, 1);
-                    addScore(POINTS.SOFT_DROP);
-                }
-                if (event.keyCode === KEY.W) {
-                    this.board.rotate();
-                }
-                if (event.keyCode === KEY.SPACE) {
-                    while (this.board.movePiece(0, 1)) {
-                        addScore(POINTS.HARD_DROP);
-                    }
-                }
-            }
-        });
-    }
-
     switchTurn() {
+        if (this.turn == TURN.PLAYER1) {
+            this.keyInputHandler.switchEventListener(this.commands.player2Commands.bind(this));
+        } else {
+            this.keyInputHandler.switchEventListener(this.commands.player1Commands.bind(this));
+        }
         this.turn = (this.turn + 1) % 2;
     }
     

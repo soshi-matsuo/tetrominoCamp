@@ -1,9 +1,7 @@
 -- doing
-    - separate key for player1, 2(arrow, wasd)
-      1. simply add if sentence
-      2. make class for keyEventListner
-        - switch accept keys by some trigger
-
+refactor keyInputHandler
+  - generalize GameMaster.commands
+      
 -- to do
 対人戦に対応させたい
   turn system（プレイヤーが交代する）
@@ -54,3 +52,5 @@ animateの中を整理
 
 - separate key for player1, 2(arrow, wasd)
     [v] 1. simply add if sentence
+    [v] 2. make class for keyEventListner
+      [v] - switch accept keys by some trigger
