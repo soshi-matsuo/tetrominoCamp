@@ -46,7 +46,7 @@ class Board {
         this.next.draw();
     }
 
-    draw(ctx) {
+    draw() {
         this.piece.draw();
         this.drawBoard();
     }
