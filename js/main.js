@@ -5,6 +5,7 @@ class GameMaster {
     ctxNext;
     requestId;
     gameState;
+    turn;
 
     account;
     time;
@@ -17,6 +18,7 @@ class GameMaster {
         this.ctxNext = this.canvasNext.getContext('2d');
         this.requestId = null;
         this.gameState = GAME_STATES.READY;
+        this.turn = TURN.PLAYER1;
 
         this.time = { 
             start: 0, 
@@ -60,6 +62,7 @@ class GameMaster {
         resetAccount();
         this.board.reset();
         this.time.init();
+        this.turn = TURN.PLAYER1;
     }
 
     update(now) {
@@ -69,7 +72,7 @@ class GameMaster {
             case GAME_STATES.PLAYING:
                 this.time.update(now);
                 if (!this.time.isElapsedEnough(now)) return;
-                const dropped = this.board.drop();
+                const dropped = this.board.drop(this.switchTurn.bind(this));
                 if (!dropped) {
                     this.gameOver();
                     return;
@@ -126,7 +129,9 @@ class GameMaster {
             if (event.keyCode === KEY.ESC && this.gameState == GAME_STATES.PLAYING) {
                 this.gameOver();
             } 
-            if (this.gameState == GAME_STATES.PLAYING) {
+
+            // player1
+            if (this.gameState == GAME_STATES.PLAYING && this.turn == TURN.PLAYER1) {
                 // stop the event user activates
                 event.preventDefault();
 
@@ -149,7 +154,36 @@ class GameMaster {
                     }
                 }
             }
+
+            // player2
+            if (this.gameState == GAME_STATES.PLAYING && this.turn == TURN.PLAYER2) {
+                // stop the event user activates
+                event.preventDefault();
+
+                if (event.keyCode === KEY.A) {
+                    this.board.movePiece(-1, 0);
+                } 
+                if (event.keyCode === KEY.D) {
+                    this.board.movePiece(1, 0);
+                }
+                if (event.keyCode === KEY.S) {
+                    this.board.movePiece(0, 1);
+                    addScore(POINTS.SOFT_DROP);
+                }
+                if (event.keyCode === KEY.W) {
+                    this.board.rotate();
+                }
+                if (event.keyCode === KEY.SPACE) {
+                    while (this.board.movePiece(0, 1)) {
+                        addScore(POINTS.HARD_DROP);
+                    }
+                }
+            }
         });
+    }
+
+    switchTurn() {
+        this.turn = (this.turn + 1) % 2;
     }
     
     gameOver() {

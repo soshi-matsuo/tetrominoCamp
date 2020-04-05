@@ -1,4 +1,8 @@
 -- doing
+    - separate key for player1, 2(arrow, wasd)
+      1. simply add if sentence
+      2. make class for keyEventListner
+        - switch accept keys by some trigger
 
 -- to do
 対人戦に対応させたい
@@ -18,9 +22,7 @@
     - determine winner
 
   --> have to implement
-  - no scoring
   - turn change
-    - separate key for player1, 2(arrow, wasd)
     - separate piece for players
       - coloring
       - spawn mino per player
@@ -29,6 +31,7 @@
     - count each values in grid
   - determine winner
     - compare counts
+  - no scoring
 
 -- done
 [v] game masterとonready関数
@@ -48,3 +51,6 @@ animateの中を整理
   [v] gameOverもupdate, drawで処理わける
   [v] gameOverしたらgame loopぬけても良いよ
   [v] pauseもupdate, drawもわけようぜ
+
+- separate key for player1, 2(arrow, wasd)
+    [v] 1. simply add if sentence

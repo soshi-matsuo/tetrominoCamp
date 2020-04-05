@@ -83,7 +83,7 @@ class Board {
     }
 
     // drop piece automatically for game loop
-    drop() {
+    drop(switchTurn) {
         if (this.movePiece(0, 1)) return true;
         
         this.freeze();
@@ -92,6 +92,7 @@ class Board {
             // Game Over
             return false;
         }
+        switchTurn();
         this.piece = this.next;
         this.piece.ctx = this.ctx;
         this.piece.setStartingPosition();

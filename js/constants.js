@@ -12,16 +12,28 @@ const GAME_STATES = {
 };
 Object.freeze(GAME_STATES);
 
+const TURN = {
+    PLAYER1: 0,
+    PLAYER2: 1
+};
+Object.freeze(TURN);
+
 // map keys to their keycode to move the piece
 // freeze() convert Object into Enum with 'use strict'
 const KEY = {
     ESC: 27,
+    P: 80,
     SPACE: 32,
+    // for player1
     LEFT: 37,
     RIGHT: 39,
     DOWN: 40,
     UP: 38,
-    P: 80
+    // for player2
+    A: 65,
+    D: 68,
+    S: 83,
+    W: 87
 };
 Object.freeze(KEY);
 
