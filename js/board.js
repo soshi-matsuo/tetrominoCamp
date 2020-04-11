@@ -29,19 +29,19 @@ class Board {
         this.ctxNext.canvas.height = 4 * BLOCK_SIZE;
         this.ctxNext.scale(BLOCK_SIZE, BLOCK_SIZE);
     }
-
+    
     // Reset the board when we start a new game
-    reset() {
+    reset(turn, getNextTurn) {
         this.grid = this.getEmptyGrid();
-        this.piece = new Piece(this.ctx);
+        this.piece = new Piece(this.ctx, turn);
         this.piece.setStartingPosition();
-
-        this.getNewPiece();
+        
+        this.getNewPiece(getNextTurn(turn));
     }
-
-    getNewPiece() {
-        this.next = new Piece(this.ctxNext);
-
+    
+    getNewPiece(turn) {
+        this.next = new Piece(this.ctxNext, turn);
+        
         this.clearCtxNext();
         this.next.draw();
     }
@@ -83,39 +83,36 @@ class Board {
     }
 
     // drop piece automatically for game loop
-    drop(switchTurn) {
+    drop(switchTurn, getNextTurn, turn) {
         if (this.movePiece(0, 1)) return true;
-        
         this.freeze();
-        this.clearLines();
-        if (this.piece.y === 0) {
-            // Game Over
-            return false;
-        }
-        switchTurn();
+        this.clearLines(turn);
+
+        // Game Over
+        if (this.piece.y === 0) return false;
+
+        const currentTurn = switchTurn();
         this.piece = this.next;
         this.piece.ctx = this.ctx;
         this.piece.setStartingPosition();
-        this.getNewPiece();
+        this.getNewPiece(getNextTurn(currentTurn));
 
         return true;
     }
 
-    clearLines() {
-        let lines = 0;
+    clearLines(turn) {
+        let rows = [];
         this.grid.forEach((row, y) => {
             // if the row is filled with block
             if (row.every(value => value > 0)) {
-                lines++;
-
                 // remove the row from grid
-                this.grid.splice(y, 1);
+                rows.push(this.grid.splice(y, 1)[0]);
 
                 // add zero filled row at the top of grid
                 this.grid.unshift(Array(COLS).fill(0));
             }
         });
-        this.updateByClearedLines(lines);
+        this.updateByClearedLines(rows, turn);
     }
 
     drawBoard() {

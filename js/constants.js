@@ -13,8 +13,8 @@ const GAME_STATES = {
 Object.freeze(GAME_STATES);
 
 const TURN = {
-    PLAYER1: 0,
-    PLAYER2: 1
+    PLAYER1: 1,
+    PLAYER2: 2
 };
 Object.freeze(TURN);
 
@@ -37,15 +37,17 @@ const KEY = {
 };
 Object.freeze(KEY);
 
-const POINTS = {
-    SINGLE: 100,
-    DOUBLE: 300,
-    TRIPLE: 500,
-    TETRIS: 800,
-    SOFT_DROP: 1,
-    HARD_DROP: 2,
-}
-Object.freeze(POINTS);
+// const POINTS = {
+//     SINGLE: 100,
+//     DOUBLE: 300,
+//     TRIPLE: 500,
+//     TETRIS: 800,
+//     SOFT_DROP: 1,
+//     HARD_DROP: 2,
+// }
+// Object.freeze(POINTS);
+
+const MAX_HP = 10;
 
 // define game speed
 const LEVEL = {
@@ -76,13 +78,13 @@ Object.freeze(LEVEL);
 
 const COLORS = [
     'none',
-    'cyan',
-    'blue',
-    'orange',
-    'yellow',
-    'green',
-    'purple',
-    'red'
+    'red',
+    // 'cyan',
+    // 'orange',
+    // 'yellow',
+    // 'green',
+    // 'purple',
+    'blue'
 ];
 
 const SHAPES = [
@@ -94,32 +96,32 @@ const SHAPES = [
         [0, 0, 0, 0]
     ],
     [
-        [2, 0, 0],
-        [2, 2, 2],
+        [1, 0, 0],
+        [1, 1, 1],
         [0, 0, 0]
     ],
     [
-        [0, 0, 3],
-        [3, 3, 3],
+        [0, 0, 1],
+        [1, 1, 1],
         [0, 0, 0]
     ],
     [
-        [4, 4],
-        [4, 4]
+        [1, 1],
+        [1, 1]
     ],
     [
-        [0, 5, 5],
-        [5, 5, 0],
+        [0, 1, 1],
+        [1, 1, 0],
         [0, 0, 0]
     ],
     [
-        [0, 6, 0],
-        [6, 6, 6],
+        [0, 1, 0],
+        [1, 1, 1],
         [0, 0, 0]
     ],
     [
-        [7, 7, 0],
-        [0, 7, 7],
+        [1, 1, 0],
+        [0, 1, 1],
         [0, 0, 0]
     ]
 ];

@@ -46,19 +46,19 @@ class GameMaster {
                 return elapsed;
             }
         };
-        this.account = new Account(this.ctxNext, this.time.setLevel.bind(this));
+        this.account = new AccountForMatch(this.ctxNext, this.time.setLevel.bind(this));
         this.board = new Board(this.ctx, this.ctxNext, this.account.updateByClearedLines.bind(this.account), this.account.clearCtxNext.bind(this.account));
         
         this.commands = {
-            addScore: this.account.addScore.bind(this.account),
+            // addScore: this.account.addScore.bind(this.account),
             hardDrop: (() => {
                 while (this.board.movePiece(0, 1)) {
-                    this.commands.addScore(POINTS.HARD_DROP);
+                    // this.commands.addScore(POINTS.HARD_DROP);
                 }
             }).bind(this),
             softDrop: (() => {
                 this.board.movePiece(0, 1);
-                this.commands.addScore(POINTS.SOFT_DROP);
+                // this.commands.addScore(POINTS.SOFT_DROP);
             }).bind(this),
             player1: {
                 up: this.board.rotate.bind(this.board),
@@ -87,8 +87,9 @@ class GameMaster {
         };
 
         this.keyInputHandler = new KeyInputHandler(this.commands.player1);
-    }
 
+    }
+    
     start() {
         this.resetGame(this.account.resetAccount.bind(this.account));
         this.time.start = performance.now();
@@ -100,9 +101,9 @@ class GameMaster {
 
     resetGame(resetAccount) {
         resetAccount();
-        this.board.reset();
-        this.time.init();
         this.turn = TURN.PLAYER1;
+        this.time.init();
+        this.board.reset(this.turn, this.getNextTurn);
         this.keyInputHandler.setCommands(this.commands.player1);
     }
 
@@ -113,8 +114,8 @@ class GameMaster {
             case GAME_STATES.PLAYING:
                 this.time.update(now);
                 if (!this.time.isElapsedEnough(now)) return;
-                const dropped = this.board.drop(this.switchTurn.bind(this));
-                if (!dropped) {
+                const dropped = this.board.drop(this.switchTurn.bind(this), this.getNextTurn, this.turn);
+                if (!dropped || (this.account.player1HP <= 0) || (this.account.player2HP <= 0)) {
                     this.gameOver();
                     return;
                 }
@@ -165,10 +166,19 @@ class GameMaster {
         } else {
             this.keyInputHandler.setCommands(this.commands.player1);
         }
-        this.turn = (this.turn + 1) % 2;
+        this.turn = this.getNextTurn(this.turn);
+
+        return this.turn;
     }
-    
+
+    getNextTurn(turn) {
+        return (turn % 2) + 1;
+    }
+
     gameOver() {
+        if (this.turn === TURN.PLAYER1) this.account.minusPlayer1HP(parseInt(MAX_HP / 3));
+        if (this.turn === TURN.PLAYER2) this.account.minusPlayer2HP(parseInt(MAX_HP / 3));
+
         this.gameState = GAME_STATES.GAMEOVER;
         this.keyInputHandler.setCommands(this.commands.gameOver);
     }
@@ -178,9 +188,15 @@ class GameMaster {
         ctx.fillRect(1, 3, 8, 1.2);
         ctx.font = '1px Arial';
         ctx.fillStyle = 'red';
-        ctx.fillText('GAME OVER', 1.8, 4);
+        if (this.account.player1HP < this.account.player2HP) {
+            ctx.fillText('Player2 Win!!', 1.8, 4);
+        } else if (this.account.player1HP > this.account.player2HP) {
+            ctx.fillText('Player1 Win!!', 1.8, 4);
+        } else {
+            ctx.fillText('DRAW', 1.8, 4);
+        }
     }
-    
+
     pause() {
         if (this.gameState == GAME_STATES.PLAYING) {
             this.gameState = GAME_STATES.PAUSE;

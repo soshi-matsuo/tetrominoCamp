@@ -1,7 +1,5 @@
 -- doing
-  - no scoring
-    - organize DOM
-      
+
 -- to do
 対人戦に対応させたい
   turn system（プレイヤーが交代する）
@@ -20,15 +18,16 @@
     - determine winner
 
   --> have to implement
-  - turn change
-    - separate piece for players
-      - coloring
-      - spawn mino per player
-      - 1 next mino 
-  - count minos
-    - count each values in grid
-  - determine winner
-    - compare counts
+    [ ] refactor
+      [ ] turn management (observer pattern?)
+      [ ] increase game speed by modifying level logic
+      [ ] separate space key
+      [ ] add idle to game state, shift to playing once play is clicked
+        [ ] error when pressing space 
+        [ ] modify or remove esc key's function
+      [ ] enrich GUI
+        [ ] use canvas instead of DOM?
+
 
 -- done
 [v] game masterとonready関数
@@ -55,3 +54,23 @@
     [v] switch accept keys by some trigger
   [v] refactor keyInputHandler
     [v] generalize GameMaster.commands
+
+[v] organize DOM
+  [v] delete existing score
+  [v] show number of cells for each player
+
+[v] count minos
+  [v] count each values in grid
+
+[v] turn change
+  [v] separate piece for players
+    [v] coloring
+    [v] spawn mino per player
+    [v] 1 next mino 
+
+[v] determine winner
+  [v] ダメージレース
+    [v] 自分が消した自分のセルの数が、相手に与えるダメージになる
+    [v] gameOverさせたプレイヤーにはデスペナルティ(HPに固定ダメージor割合ダメージ？)
+    [v] 相手のHPをゼロにしたプレイヤーの勝ち
+      [v] gameOver時点で両者HPが残っていた場合(デスペナルティを計算した上で)残りHPの多い方の勝ち

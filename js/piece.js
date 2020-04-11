@@ -6,11 +6,20 @@ class Piece {
     ctx;
     typeId;
 
-    constructor(ctx) {
+    constructor(ctx, turn) {
         this.ctx = ctx;
-        this.typeId = this.randomizeTetrominoTypes(COLORS.length - 1);
-        this.color = COLORS[this.typeId];
-        this.shape = SHAPES[this.typeId];
+        this.typeId = this.randomizeTetrominoTypes(SHAPES.length - 1);
+
+        this.color = COLORS[turn];
+
+        // pass by value to rewrite value in shape
+        this.shape = JSON.parse(JSON.stringify(SHAPES[this.typeId]));
+        for (let row=0; row < this.shape.length; row++) {
+            for (let col=0; col < this.shape[row].length; col++) {
+                if (this.shape[row][col] > 0) this.shape[row][col] = turn;
+            }
+        }
+
         this.x = 0;
         this.y = 0;
     }
