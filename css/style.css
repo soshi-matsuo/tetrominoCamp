@@ -4,7 +4,7 @@
 
 .grid {
     display: grid;
-    grid-template-columns: 320px 200px;
+    grid-template-columns: 640px 200px;
 }
 
 .right-column {
@@ -22,4 +22,11 @@
     font-size: 16px;
     padding: 15px 30px;
     cursor: pointer;
+}
+
+.center {
+    margin: auto;
+    width: 50%; /* must be the same as canvas size */
+    border: 3px solid green; /*delete in production*/
+    padding: 10px;
 }

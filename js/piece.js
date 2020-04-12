@@ -40,6 +40,12 @@ class Piece {
 
     setStartingPosition() {
         this.x = this.typeId === 4 ? 4 : 3;
+        this.y = 0;
+    }
+
+    setNextPiecePosition() {
+        this.x = 12;
+        this.y = 12;
     }
 
     randomizeTetrominoTypes(noOfTypes, colorId) {

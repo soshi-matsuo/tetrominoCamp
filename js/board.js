@@ -1,33 +1,15 @@
 class Board {
     ctx;
-    ctxNext;
     grid;
     piece;
     next; // next piece
     requestId;
     time;
     updateByClearedLines;
-    clearCtxNext;
 
-    constructor(ctx, ctxNext, updateByClearedLines, clearCtxNext) {
+    constructor(ctx, updateByClearedLines) {
         this.ctx = ctx;
-        this.ctxNext = ctxNext;
-        this.init();
         this.updateByClearedLines = updateByClearedLines;
-        this.clearCtxNext = clearCtxNext;
-    }
-
-    init() {
-        // calculate size of canvas from constants.
-        this.ctx.canvas.width = COLS * BLOCK_SIZE;
-        this.ctx.canvas.height = ROWS * BLOCK_SIZE;
-        // scale blocks
-        this.ctx.scale(BLOCK_SIZE, BLOCK_SIZE);
-
-        // init next
-        this.ctxNext.canvas.width = 4 * BLOCK_SIZE;
-        this.ctxNext.canvas.height = 4 * BLOCK_SIZE;
-        this.ctxNext.scale(BLOCK_SIZE, BLOCK_SIZE);
     }
 
     // Reset the board when we start a new game
@@ -40,13 +22,13 @@ class Board {
     }
 
     getNewPiece(color) {
-        this.next = new Piece(this.ctxNext, color);
-        this.clearCtxNext();
-        this.next.draw();
+        this.next = new Piece(this.ctx, color);
+        this.next.setNextPiecePosition();
     }
 
     draw() {
         this.piece.draw();
+        this.next.draw();
         this.drawBoard();
     }
 

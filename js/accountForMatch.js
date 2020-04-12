@@ -1,5 +1,4 @@
 class AccountForMatch {
-    ctxNext;
     level;
     lines;
     player1HP;
@@ -7,43 +6,29 @@ class AccountForMatch {
     setTimeLevel;
     currentTurn;
 
-    constructor(ctxNext, setTimeLevel) {
+    constructor(setTimeLevel) {
         this.resetAccount();
-
-        this.ctxNext = ctxNext;
-        this.initCtxNext();
 
         this.setTimeLevel = setTimeLevel;
     }
 
     setLevel(level) {
         this.level = level;
-        this.updateAccountDom('level', level);
     }
 
     setLines(lines) {
         this.lines = lines;
-        this.updateAccountDom('lines', lines);
     }
 
     setPlayer1HP(player1HP) {
         if (player1HP <= 0) player1HP = 0;
         this.player1HP = player1HP;
-        this.updateAccountDom('player1HP', player1HP);
     }
 
     setPlayer2HP(player2HP) {
         if (player2HP <= 0) player2HP = 0;
         this.player2HP = player2HP;
-        this.updateAccountDom('player2HP', player2HP);
     }
-
-    updateAccountDom(key, value) {
-        let element = document.getElementById(key);
-        if (element) {
-            element.textContent = value;
-        }
-    };
 
     resetAccount() {
         this.setLevel(0);
@@ -60,19 +45,6 @@ class AccountForMatch {
     addLevel(level) {
         const newLevel = this.level + level;
         this.setLevel(newLevel);
-    }
-
-    initCtxNext() {
-        this.ctxNext.canvas.width = 4 * BLOCK_SIZE;
-        this.ctxNext.canvas.height = 4 * BLOCK_SIZE;
-        this.ctxNext.scale(BLOCK_SIZE, BLOCK_SIZE);
-    }
-
-    clearCtxNext() {
-        this.ctxNext.clearRect(0, 0, 
-            this.ctxNext.canvas.width,
-            this.ctxNext.canvas.height
-        );
     }
 
     onTurnChanged(turn) {
@@ -121,5 +93,16 @@ class AccountForMatch {
     minusPlayer2HP(damage) {
         const newHP = this.player2HP - damage;
         this.setPlayer2HP(newHP);
+    }
+
+    draw(ctx) {
+        ctx.font = '1px Arial';
+        ctx.fillStyle = 'black';
+        ctx.fillText(`LINES: ${this.lines}`, 12, 2);
+        ctx.fillText(`LEVEL: ${this.level}`, 12, 3);
+        // player1 data
+        ctx.fillText(`P1 HP: ${this.player1HP}`, 12, 4);
+        // player2 data
+        ctx.fillText(`P2 HP: ${this.player2HP}`, 12, 5);
     }
 }

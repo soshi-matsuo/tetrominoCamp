@@ -1,8 +1,6 @@
 class GameMaster {
     canvas;
     ctx;
-    canvasNext;
-    ctxNext;
     requestId;
     gameState;
     turn;
@@ -16,8 +14,8 @@ class GameMaster {
     constructor() {
         this.canvas = document.getElementById('board');
         this.ctx = this.canvas.getContext('2d');
-        this.canvasNext = document.getElementById('next');
-        this.ctxNext = this.canvasNext.getContext('2d');
+        this.initCtx();
+
         this.requestId = null;
         this.gameState = GAME_STATES.READY;
 
@@ -78,9 +76,9 @@ class GameMaster {
                 return elapsed;
             }
         };
-        this.account = new AccountForMatch(this.ctxNext, this.time.setLevel.bind(this));
+        this.account = new AccountForMatch(this.time.setLevel.bind(this));
         this.turn.addListener(this.account.onTurnChanged.bind(this.account));
-        this.board = new Board(this.ctx, this.ctxNext, this.account.updateByClearedLines.bind(this.account), this.account.clearCtxNext.bind(this.account));
+        this.board = new Board(this.ctx, this.account.updateByClearedLines.bind(this.account));
 
         this.commands = {
             hardDrop: (() => {
@@ -113,13 +111,18 @@ class GameMaster {
         this.keyInputHandler = new KeyInputHandler({});
     }
 
+    initCtx() {
+        // calculate size of canvas from constants.
+        this.ctx.canvas.width = SCREEN_WIDTH;
+        this.ctx.canvas.height = SCREEN_HEIGHT;
+        // scale blocks
+        this.ctx.scale(BLOCK_SIZE, BLOCK_SIZE);
+    }
+
     start() {
         this.resetGame(this.account.resetAccount.bind(this.account));
         this.time.start = performance.now();
-        // if old game is running, cancel it
-        if (this.requestId) cancelAnimationFrame(this.requestId);
         this.gameState = GAME_STATES.PLAYING;
-        this.loopGame();
     }
 
     resetGame(resetAccount) {
@@ -135,22 +138,7 @@ class GameMaster {
             case GAME_STATES.READY:
                 break;
             case GAME_STATES.PLAYING:
-                this.time.update(now);
-                if (!this.time.isElapsedEnough(now)) return;
-
-                const isDropped = this.board.drop();
-                if (this.board.isReachedRoof() || (this.account.player1HP <= 0) || (this.account.player2HP <= 0)) {
-                    this.gameOver();
-                    return;
-                }
-                if (!isDropped) {
-                    // switch turn
-                    this.turn.switchTurn();
-                    // move next mino to currrent one
-                    this.board.switchCurrentPiece();
-                    // generate next piece
-                    this.board.getNewPiece(COLORS[this.turn.getNextTurn()]);
-                }
+                this.updatePlaying(now);
                 break;
             case GAME_STATES.PAUSE:
                 break;
@@ -158,6 +146,22 @@ class GameMaster {
                 break;
             default:
                 break;
+        }
+    }
+
+    updatePlaying(now) {
+        this.time.update(now);
+        if (!this.time.isElapsedEnough(now)) return;
+
+        const isDropped = this.board.drop();
+        if (this.board.isReachedRoof() || (this.account.player1HP <= 0) || (this.account.player2HP <= 0)) {
+            this.gameOver();
+            return;
+        }
+        if (!isDropped) {
+            this.turn.switchTurn();
+            this.board.switchCurrentPiece();
+            this.board.getNewPiece(COLORS[this.turn.getNextTurn()]);
         }
     }
 
@@ -183,6 +187,7 @@ class GameMaster {
             default:
                 break;
         }
+        this.account.draw(this.ctx);
     }
 
     loopGame(now = 0) {
@@ -238,6 +243,7 @@ class GameMaster {
 }
 
 const gameMaster = new GameMaster();
+gameMaster.loopGame();
 const play = () => {
     if (gameMaster === undefined) return;
     gameMaster.start();

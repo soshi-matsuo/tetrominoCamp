@@ -5,6 +5,13 @@ const BLOCK_SIZE = 30;
 const LINES_PER_LEVEL = 1;
 const MAX_HP = 10;
 
+const BOARD_SCREEN_WIDTH = COLS * BLOCK_SIZE;
+const BOARD_SCREEN_HEIGHT = ROWS * BLOCK_SIZE;
+const ACCOUNT_SCREEN_WIDTH = 4 * BLOCK_SIZE;
+const ACCOUNT_SCREEN_HEIGHT = BOARD_SCREEN_HEIGHT;
+const SCREEN_WIDTH = BOARD_SCREEN_WIDTH + ACCOUNT_SCREEN_WIDTH * 2;
+const SCREEN_HEIGHT = BOARD_SCREEN_HEIGHT;
+
 const GAME_STATES = {
     READY: 0,
     PLAYING: 1,
@@ -38,17 +45,6 @@ const KEY = {
 };
 Object.freeze(KEY);
 
-// const POINTS = {
-//     SINGLE: 100,
-//     DOUBLE: 300,
-//     TRIPLE: 500,
-//     TETRIS: 800,
-//     SOFT_DROP: 1,
-//     HARD_DROP: 2,
-// }
-// Object.freeze(POINTS);
-
-
 // define game speed
 const LEVEL = {
     0: 800,
@@ -79,11 +75,6 @@ Object.freeze(LEVEL);
 const COLORS = [
     'none',
     'red',
-    // 'cyan',
-    // 'orange',
-    // 'yellow',
-    // 'green',
-    // 'purple',
     'blue'
 ];
 

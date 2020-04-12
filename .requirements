@@ -1,7 +1,4 @@
 -- doing
-  [ ] refactor update logic of GAME_STATE.PLAYING
-  [ ] enrich GUI
-    [ ] use canvas instead of DOM?
 
 -- to do
 対人戦に対応させたい
@@ -21,6 +18,13 @@
     - determine winner
 
   --> have to implement
+  [ ] enrich GUI
+    [ ] player account data on each side of board
+      [ ] HP should be illustrated as a bar
+        [ ] every hp update should fire an animation
+        [ ] once hp becomes 0, some animation should be fired
+    [ ] animation on clear line
+    [ ] player avator animation per some events
 
 -- done
 ---- refactor existing code
@@ -70,7 +74,7 @@
     [v] 相手のHPをゼロにしたプレイヤーの勝ち
       [v] gameOver時点で両者HPが残っていた場合(デスペナルティを計算した上で)残りHPの多い方の勝ち
       
-[ ] refactor
+[v] refactor
   [v] increase game speed by modifying level logic
   [v] separate space key
   [v] add idle to game state, shift to playing once play is clicked→Ready is enough
@@ -81,3 +85,9 @@
     [v] board.drop()の処理を分割したい
     [v] Pieceの初期化の際に、turnではなくcolorを渡す
       [v] SHAPESの値渡しを修正して処理落ちを改善、UX向上
+  [v] refactor update logic of GAME_STATE.PLAYING
+
+[ ] enrich GUI
+  [v] align board to the center of the screen
+  [v] use canvas instead of DOM?
+    [v] single canvas to draw all.
