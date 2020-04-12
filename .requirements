@@ -1,4 +1,5 @@
 -- doing
+  [ ] refactor update logic of GAME_STATE.PLAYING
   [ ] enrich GUI
     [ ] use canvas instead of DOM?
 
