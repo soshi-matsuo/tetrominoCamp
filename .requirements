@@ -1,4 +1,6 @@
 -- doing
+  [ ] enrich GUI
+    [ ] use canvas instead of DOM?
 
 -- to do
 対人戦に対応させたい
@@ -18,18 +20,9 @@
     - determine winner
 
   --> have to implement
-    [ ] refactor
-      [ ] turn management (observer pattern?)
-      [ ] increase game speed by modifying level logic
-      [ ] separate space key
-      [ ] add idle to game state, shift to playing once play is clicked
-        [ ] error when pressing space 
-        [ ] modify or remove esc key's function
-      [ ] enrich GUI
-        [ ] use canvas instead of DOM?
-
 
 -- done
+---- refactor existing code
 [v] game masterとonready関数
   [v] let board ..とeventlistner呼び出しまとめる
   [v] time含めglobalぽい変数の整理
@@ -48,6 +41,7 @@
   [v] gameOverしたらgame loopぬけても良いよ
   [v] pauseもupdate, drawもわけようぜ
 
+---- add new function
 [v] separate key for player1, 2(arrow, wasd)
   [v] 1. simply add if sentence
   [v] 2. make class for keyEventListner
@@ -74,3 +68,15 @@
     [v] gameOverさせたプレイヤーにはデスペナルティ(HPに固定ダメージor割合ダメージ？)
     [v] 相手のHPをゼロにしたプレイヤーの勝ち
       [v] gameOver時点で両者HPが残っていた場合(デスペナルティを計算した上で)残りHPの多い方の勝ち
+      
+[ ] refactor
+  [v] increase game speed by modifying level logic
+  [v] separate space key
+  [v] add idle to game state, shift to playing once play is clicked→Ready is enough
+    [v] error when pressing space 
+    [v] modify or remove esc key's function
+  [v] turn management (observer pattern?)
+    [v] gameMaster.turnにturn関係の処理をまとめる
+    [v] board.drop()の処理を分割したい
+    [v] Pieceの初期化の際に、turnではなくcolorを渡す
+      [v] SHAPESの値渡しを修正して処理落ちを改善、UX向上

@@ -5,6 +5,7 @@ class AccountForMatch {
     player1HP;
     player2HP;
     setTimeLevel;
+    currentTurn;
 
     constructor(ctxNext, setTimeLevel) {
         this.resetAccount();
@@ -74,12 +75,16 @@ class AccountForMatch {
         );
     }
 
-    updateByClearedLines(clearedRows, turn) {
+    onTurnChanged(turn) {
+        this.currentTurn = turn;
+    }
+
+    updateByClearedLines(clearedRows) {
         if (clearedRows.length <= 0) return;
         this.addLines(clearedRows.length);
 
         // apply damage
-        this.applyDamage(clearedRows, turn);
+        this.applyDamage(clearedRows);
 
         // if it reached the lines for next level
         if (this.lines >= LINES_PER_LEVEL) {
@@ -93,15 +98,15 @@ class AccountForMatch {
         }
     }
 
-    applyDamage(clearedRows, turn) {
+    applyDamage(clearedRows) {
         let damage = 0;
         clearedRows.forEach(row => {
             row.forEach(cell => {
-                if (cell === turn) damage++;
+                if (cell === this.currentTurn) damage++;
             });
         });
 
-        if (turn === TURN.PLAYER1) {
+        if (this.currentTurn === TURN.PLAYER1) {
             this.minusPlayer2HP(damage);
         } else {
             this.minusPlayer1HP(damage);

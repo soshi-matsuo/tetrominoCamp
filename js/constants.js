@@ -2,7 +2,8 @@
 const COLS = 10;
 const ROWS = 20;
 const BLOCK_SIZE = 30;
-const LINES_PER_LEVEL = 10;
+const LINES_PER_LEVEL = 1;
+const MAX_HP = 10;
 
 const GAME_STATES = {
     READY: 0,
@@ -21,19 +22,19 @@ Object.freeze(TURN);
 // map keys to their keycode to move the piece
 // freeze() convert Object into Enum with 'use strict'
 const KEY = {
-    ESC: 27,
     P: 80,
-    SPACE: 32,
     // for player1
     LEFT: 37,
     RIGHT: 39,
     DOWN: 40,
     UP: 38,
+    SPACE: 32,
     // for player2
     A: 65,
     D: 68,
     S: 83,
-    W: 87
+    W: 87,
+    C: 67
 };
 Object.freeze(KEY);
 
@@ -47,7 +48,6 @@ Object.freeze(KEY);
 // }
 // Object.freeze(POINTS);
 
-const MAX_HP = 10;
 
 // define game speed
 const LEVEL = {
@@ -87,6 +87,7 @@ const COLORS = [
     'blue'
 ];
 
+const SHAPES_NUM = 7;
 const SHAPES = [
     [],
     [
@@ -122,6 +123,41 @@ const SHAPES = [
     [
         [1, 1, 0],
         [0, 1, 1],
+        [0, 0, 0]
+    ],
+    [
+        [0, 0, 0, 0],
+        [2, 2, 2, 2],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0]
+    ],
+    [
+        [2, 0, 0],
+        [2, 2, 2],
+        [0, 0, 0]
+    ],
+    [
+        [0, 0, 2],
+        [2, 2, 2],
+        [0, 0, 0]
+    ],
+    [
+        [2, 2],
+        [2, 2]
+    ],
+    [
+        [0, 2, 2],
+        [2, 2, 0],
+        [0, 0, 0]
+    ],
+    [
+        [0, 2, 0],
+        [2, 2, 2],
+        [0, 0, 0]
+    ],
+    [
+        [2, 2, 0],
+        [0, 2, 2],
         [0, 0, 0]
     ]
 ];

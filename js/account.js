@@ -4,6 +4,7 @@ class Account {
     level;
     lines;
     setTimeLevel;
+    currentTurn;
 
     constructor(ctxNext, setTimeLevel) {
         this.setScore(0);

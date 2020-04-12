@@ -6,19 +6,12 @@ class Piece {
     ctx;
     typeId;
 
-    constructor(ctx, turn) {
+    constructor(ctx, color) {
         this.ctx = ctx;
-        this.typeId = this.randomizeTetrominoTypes(SHAPES.length - 1);
-
-        this.color = COLORS[turn];
-
-        // pass by value to rewrite value in shape
-        this.shape = JSON.parse(JSON.stringify(SHAPES[this.typeId]));
-        for (let row=0; row < this.shape.length; row++) {
-            for (let col=0; col < this.shape[row].length; col++) {
-                if (this.shape[row][col] > 0) this.shape[row][col] = turn;
-            }
-        }
+        this.color = color;
+        const colorId = COLORS.indexOf(color);
+        this.typeId = this.randomizeTetrominoTypes(SHAPES_NUM, colorId);
+        this.shape = SHAPES[this.typeId];
 
         this.x = 0;
         this.y = 0;
@@ -49,8 +42,9 @@ class Piece {
         this.x = this.typeId === 4 ? 4 : 3;
     }
 
-    randomizeTetrominoTypes(noOfTypes) {
+    randomizeTetrominoTypes(noOfTypes, colorId) {
         // typeId ranges 1 to 7
-        return Math.floor(Math.random() * noOfTypes + 1);
+        const baseId = noOfTypes * (colorId - 1);
+        return baseId + Math.floor(Math.random() * noOfTypes + 1);
     }
 }

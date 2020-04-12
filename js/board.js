@@ -29,19 +29,18 @@ class Board {
         this.ctxNext.canvas.height = 4 * BLOCK_SIZE;
         this.ctxNext.scale(BLOCK_SIZE, BLOCK_SIZE);
     }
-    
+
     // Reset the board when we start a new game
-    reset(turn, getNextTurn) {
+    reset(color1st, color2nd) {
         this.grid = this.getEmptyGrid();
-        this.piece = new Piece(this.ctx, turn);
+        this.piece = new Piece(this.ctx, color1st);
         this.piece.setStartingPosition();
-        
-        this.getNewPiece(getNextTurn(turn));
+
+        this.getNewPiece(color2nd); 
     }
-    
-    getNewPiece(turn) {
-        this.next = new Piece(this.ctxNext, turn);
-        
+
+    getNewPiece(color) {
+        this.next = new Piece(this.ctxNext, color);
         this.clearCtxNext();
         this.next.draw();
     }
@@ -83,24 +82,24 @@ class Board {
     }
 
     // drop piece automatically for game loop
-    drop(switchTurn, getNextTurn, turn) {
+    drop() {
+        // drop mino
         if (this.movePiece(0, 1)) return true;
         this.freeze();
-        this.clearLines(turn);
+        this.clearLines();
 
-        // Game Over
-        if (this.piece.y === 0) return false;
-
-        const currentTurn = switchTurn();
+        return false;
+    }
+    
+    // move next mino to currrent one
+    switchCurrentPiece() {
         this.piece = this.next;
         this.piece.ctx = this.ctx;
         this.piece.setStartingPosition();
-        this.getNewPiece(getNextTurn(currentTurn));
-
-        return true;
     }
 
-    clearLines(turn) {
+    // updateByClearedLinesに渡したい
+    clearLines() {
         let rows = [];
         this.grid.forEach((row, y) => {
             // if the row is filled with block
@@ -112,7 +111,7 @@ class Board {
                 this.grid.unshift(Array(COLS).fill(0));
             }
         });
-        this.updateByClearedLines(rows, turn);
+        this.updateByClearedLines(rows);
     }
 
     drawBoard() {
@@ -145,12 +144,16 @@ class Board {
         return this.grid[y] && this.grid[y][x] === 0;
     }
 
-    insideWalls(x) {
+    isInsideWalls(x) {
         return x >= 0 && x < COLS;
     }
 
-    aboveFloor(y) {
+    isAboveFloor(y) {
         return y <= ROWS;
+    }
+
+    isReachedRoof() {
+        return this.piece.y === 0;
     }
 
     // accept potential new position of piece and check its all cells
@@ -164,7 +167,7 @@ class Board {
                 let y = p.y + dy;
                 return (
                     value === 0 ||
-                    (this.insideWalls(x) && this.aboveFloor(y) && this.isNotOccupied(x, y))
+                    (this.isInsideWalls(x) && this.isAboveFloor(y) && this.isNotOccupied(x, y))
                 );
             });
         });

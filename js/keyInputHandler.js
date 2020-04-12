@@ -10,10 +10,6 @@ class KeyInputHandler {
                 this.commands.p?.();
             }
 
-            if (event.keyCode === KEY.ESC) {
-                this.commands.esc?.();
-            }
-
             if (event.keyCode === KEY.UP) {
                 this.commands.up?.();
             }
@@ -44,6 +40,9 @@ class KeyInputHandler {
 
             if (event.keyCode === KEY.SPACE) {
                 this.commands.space?.();
+            }
+            if (event.keyCode === KEY.C) {
+                this.commands.c?.();
             }
         };
         document.addEventListener('keydown', this.listner);

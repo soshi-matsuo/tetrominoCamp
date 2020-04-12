@@ -7,12 +7,12 @@ class GameMaster {
     gameState;
     turn;
     commands;
-    
+
     account;
     time;
     board;
     keyInputHandler;
-    
+
     constructor() {
         this.canvas = document.getElementById('board');
         this.ctx = this.canvas.getContext('2d');
@@ -20,12 +20,44 @@ class GameMaster {
         this.ctxNext = this.canvasNext.getContext('2d');
         this.requestId = null;
         this.gameState = GAME_STATES.READY;
-        this.turn = TURN.PLAYER1;
-        
-        
-        this.time = { 
-            start: 0, 
-            elapsed: 0, 
+
+        this.turn = {
+            value: TURN.PLAYER1,
+            listeners: [],
+            setTurn: (val) => {
+                this.turn.value = val;
+                this.turn.notify(this.turn.getTurn());
+            },
+            switchTurn: () => {
+                if (this.turn.getTurn() == TURN.PLAYER1) {
+                    this.keyInputHandler.setCommands(this.commands.player2);
+                } else {
+                    this.keyInputHandler.setCommands(this.commands.player1);
+                }
+                this.turn.setTurn(this.turn.getNextTurn());
+            },
+            getNextTurn: () => {
+                return (this.turn.getTurn() % 2) + 1;
+            },
+            getTurn: () => {
+                return this.turn.value;
+            },
+            addListener: (listener) => {
+                this.turn.listeners.push(listener);
+            },
+            removeListener: (listener) => {
+                this.turn.listeners.splice(this.turn.listeners.indexOf(listener), 1);
+            },
+            notify: (data) => {
+                for (let i = 0; i < this.turn.listeners.length; i++) {
+                    this.turn.listeners[i](data);
+                }
+            }
+        };
+
+        this.time = {
+            start: 0,
+            elapsed: 0,
             level: LEVEL[0],
             init: () => {
                 this.time.start = 0;
@@ -47,49 +79,40 @@ class GameMaster {
             }
         };
         this.account = new AccountForMatch(this.ctxNext, this.time.setLevel.bind(this));
+        this.turn.addListener(this.account.onTurnChanged.bind(this.account));
         this.board = new Board(this.ctx, this.ctxNext, this.account.updateByClearedLines.bind(this.account), this.account.clearCtxNext.bind(this.account));
-        
+
         this.commands = {
-            // addScore: this.account.addScore.bind(this.account),
             hardDrop: (() => {
-                while (this.board.movePiece(0, 1)) {
-                    // this.commands.addScore(POINTS.HARD_DROP);
-                }
+                while (this.board.movePiece(0, 1));
             }).bind(this),
             softDrop: (() => {
                 this.board.movePiece(0, 1);
-                // this.commands.addScore(POINTS.SOFT_DROP);
             }).bind(this),
             player1: {
                 up: this.board.rotate.bind(this.board),
                 left: this.board.movePiece.bind(this.board, -1, 0),
-                down: () => {this.commands.softDrop();},
+                down: () => { this.commands.softDrop(); },
                 right: this.board.movePiece.bind(this.board, 1, 0),
-                space: () => {this.commands.hardDrop();},
-                p: this.pause.bind(this),
-                esc: this.gameOver.bind(this),
+                space: () => { this.commands.hardDrop(); },
+                p: this.pause.bind(this)
             },
             player2: {
                 w: this.board.rotate.bind(this.board),
                 a: this.board.movePiece.bind(this.board, -1, 0),
-                s: () => {this.commands.softDrop();},
+                s: () => { this.commands.softDrop(); },
                 d: this.board.movePiece.bind(this.board, 1, 0),
-                space: () => {this.commands.hardDrop();},
-                p: this.pause.bind(this),
-                esc: this.gameOver.bind(this),
+                c: () => { this.commands.hardDrop(); },
+                p: this.pause.bind(this)
             },
             pause: {
                 p: this.pause.bind(this),
-            },
-            gameOver: {
-                esc: this.gameOver.bind(this),
             }
         };
 
-        this.keyInputHandler = new KeyInputHandler(this.commands.player1);
-
+        this.keyInputHandler = new KeyInputHandler({});
     }
-    
+
     start() {
         this.resetGame(this.account.resetAccount.bind(this.account));
         this.time.start = performance.now();
@@ -101,23 +124,32 @@ class GameMaster {
 
     resetGame(resetAccount) {
         resetAccount();
-        this.turn = TURN.PLAYER1;
+        this.turn.setTurn(TURN.PLAYER1);
         this.time.init();
-        this.board.reset(this.turn, this.getNextTurn);
+        this.board.reset(COLORS[this.turn.getTurn()], COLORS[this.turn.getNextTurn()]);
         this.keyInputHandler.setCommands(this.commands.player1);
     }
 
     update(now) {
-        switch(this.gameState) {
+        switch (this.gameState) {
             case GAME_STATES.READY:
                 break;
             case GAME_STATES.PLAYING:
                 this.time.update(now);
                 if (!this.time.isElapsedEnough(now)) return;
-                const dropped = this.board.drop(this.switchTurn.bind(this), this.getNextTurn, this.turn);
-                if (!dropped || (this.account.player1HP <= 0) || (this.account.player2HP <= 0)) {
+
+                const isDropped = this.board.drop();
+                if (this.board.isReachedRoof() || (this.account.player1HP <= 0) || (this.account.player2HP <= 0)) {
                     this.gameOver();
                     return;
+                }
+                if (!isDropped) {
+                    // switch turn
+                    this.turn.switchTurn();
+                    // move next mino to currrent one
+                    this.board.switchCurrentPiece();
+                    // generate next piece
+                    this.board.getNewPiece(COLORS[this.turn.getNextTurn()]);
                 }
                 break;
             case GAME_STATES.PAUSE:
@@ -125,7 +157,7 @@ class GameMaster {
             case GAME_STATES.GAMEOVER:
                 break;
             default:
-                break; 
+                break;
         }
     }
 
@@ -134,7 +166,7 @@ class GameMaster {
     }
 
     draw() {
-        switch(this.gameState) {
+        switch (this.gameState) {
             case GAME_STATES.READY:
                 break;
             case GAME_STATES.PLAYING:
@@ -160,24 +192,9 @@ class GameMaster {
         this.requestId = requestAnimationFrame(this.loopGame.bind(this));
     }
 
-    switchTurn() {
-        if (this.turn == TURN.PLAYER1) {
-            this.keyInputHandler.setCommands(this.commands.player2);
-        } else {
-            this.keyInputHandler.setCommands(this.commands.player1);
-        }
-        this.turn = this.getNextTurn(this.turn);
-
-        return this.turn;
-    }
-
-    getNextTurn(turn) {
-        return (turn % 2) + 1;
-    }
-
     gameOver() {
-        if (this.turn === TURN.PLAYER1) this.account.minusPlayer1HP(parseInt(MAX_HP / 3));
-        if (this.turn === TURN.PLAYER2) this.account.minusPlayer2HP(parseInt(MAX_HP / 3));
+        if (this.turn.getTurn() === TURN.PLAYER1) this.account.minusPlayer1HP(parseInt(MAX_HP / 3));
+        if (this.turn.getTurn() === TURN.PLAYER2) this.account.minusPlayer2HP(parseInt(MAX_HP / 3));
 
         this.gameState = GAME_STATES.GAMEOVER;
         this.keyInputHandler.setCommands(this.commands.gameOver);
@@ -204,13 +221,13 @@ class GameMaster {
         }
         else if (this.gameState == GAME_STATES.PAUSE) {
             this.gameState = GAME_STATES.PLAYING;
-            if (this.turn == TURN.PLAYER1)
+            if (this.turn.getTurn() === TURN.PLAYER1)
                 this.keyInputHandler.setCommands(this.commands.player1);
             else
                 this.keyInputHandler.setCommands(this.commands.player2);
         }
     }
-    
+
     drawPause(ctx) {
         ctx.fillStyle = 'black';
         ctx.fillRect(1, 3, 8, 1.2);
