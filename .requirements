@@ -1,3 +1,13 @@
+-- feedback from Jeri
+総評：テトリス二人でやっただけ？対戦としての面白さにはピンとこず
+[ ] 見た目的に、今自分の状態が何かわかりにくい
+  [ ] ピンチ、チャンスが分からん（ゲームとしての盤面の状況把握が難しい(UI matter?)）
+  [ ] LINES, LEVELは表示不要
+  [ ] 赤青のどっちがp1, p2なん？初見じゃ分からん
+    [ ] 画面上にキー操作方法も出しっぱ
+[ ] ルールが難しい
+  [ ] ダメージ固定で良い（行数依存）
+
 -- doing
 
 -- to do
@@ -25,12 +35,6 @@
         [ ] once hp becomes 0, some animation should be fired
     [ ] animation on clear line
     [ ] player avator animation per some events
-  [ ] 見た目的に、今自分の状態が何かわかりにくい
-    [ ] 危機感が迫らない
-    [ ] LINES, LEVELは表示不要
-    [ ] 赤青のどっちがp1, p2なん？初見じゃ分からん
-  [ ] ルールが難しい
-    [ ] ダメージ固定で良い（行数依存）
 
 -- done
 ---- refactor existing code
