@@ -154,7 +154,13 @@ class GameMaster {
         if (!this.time.isElapsedEnough(now)) return;
 
         const isDropped = this.board.drop();
-        if (this.board.isReachedRoof() || (this.account.player1HP <= 0) || (this.account.player2HP <= 0)) {
+        if (this.board.isReachedRoof()) {
+            if (this.turn.getTurn() === TURN.PLAYER1) this.account.minusPlayer1HP(parseInt(MAX_HP / 3));
+            if (this.turn.getTurn() === TURN.PLAYER2) this.account.minusPlayer2HP(parseInt(MAX_HP / 3));
+            this.gameOver();
+            return;
+        }
+        if ((this.account.player1HP <= 0) || (this.account.player2HP <= 0)) {
             this.gameOver();
             return;
         }
@@ -198,9 +204,6 @@ class GameMaster {
     }
 
     gameOver() {
-        if (this.turn.getTurn() === TURN.PLAYER1) this.account.minusPlayer1HP(parseInt(MAX_HP / 3));
-        if (this.turn.getTurn() === TURN.PLAYER2) this.account.minusPlayer2HP(parseInt(MAX_HP / 3));
-
         this.gameState = GAME_STATES.GAMEOVER;
         this.keyInputHandler.setCommands(this.commands.gameOver);
     }
