@@ -115,8 +115,6 @@ class GameMaster {
         // calculate size of canvas from constants.
         this.ctx.canvas.width = SCREEN_WIDTH;
         this.ctx.canvas.height = SCREEN_HEIGHT;
-        // scale blocks
-        this.ctx.scale(BLOCK_SIZE, BLOCK_SIZE);
     }
 
     start() {
@@ -180,14 +178,14 @@ class GameMaster {
             case GAME_STATES.READY:
                 break;
             case GAME_STATES.PLAYING:
-                this.board.draw();
+                this.board.draw(OFFSET_X, OFFSET_Y);
                 break;
             case GAME_STATES.PAUSE:
-                this.board.draw();
+                this.board.draw(OFFSET_X, OFFSET_Y);
                 this.drawPause(this.ctx);
                 break;
             case GAME_STATES.GAMEOVER:
-                this.board.draw();
+                this.board.draw(OFFSET_X, OFFSET_Y);
                 this.drawGameOver(this.ctx);
                 break;
             default:

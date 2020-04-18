@@ -1,14 +1,10 @@
--- feedback from Jeri
-総評：テトリス二人でやっただけ？対戦としての面白さにはピンとこず
-[ ] 見た目的に、今自分の状態が何かわかりにくい
-  [ ] ピンチ、チャンスが分からん（ゲームとしての盤面の状況把握が難しい(UI matter?)）
-  [ ] LINES, LEVELは表示不要
-  [ ] 赤青のどっちがp1, p2なん？初見じゃ分からん
-    [ ] 画面上にキー操作方法も出しっぱ
-[ ] ルールが難しい
-  [ ] ダメージ固定で良い（行数依存）
-
 -- doing
+  [ ] clarify UI about game situation
+    [ ] ピンチ、チャンスが分からん（ゲームとしての盤面の状況把握が難しい(UI matter?)）
+    [ ] LINES, LEVELは表示不要
+    [ ] 赤青のどっちがp1, p2なん？初見じゃ分からん
+      [ ] 画面上にキー操作方法も出しっぱ
+  ※general fb from jeri：テトリス二人でやっただけ？対戦としての面白さにはピンとこず
 
 -- to do
 対人戦に対応させたい
@@ -28,13 +24,14 @@
     - determine winner
 
   --> have to implement
-  [ ] enrich GUI
+  [ ] enrich GUI for entertainment
     [ ] player account data on each side of board
       [ ] HP should be illustrated as a bar
         [ ] every hp update should fire an animation
         [ ] once hp becomes 0, some animation should be fired
+      [ ] player avator animation per some events
     [ ] animation on clear line
-    [ ] player avator animation per some events
+
 
 -- done
 ---- refactor existing code
@@ -101,3 +98,11 @@
   [v] align board to the center of the screen
   [v] use canvas instead of DOM?
     [v] single canvas to draw all.
+
+[v] ルールが難しい
+  [v] ダメージ固定で良い（行数依存）
+
+[ ] clarify UI about game situation
+  [v] delete ctx.scale()
+  [v] divide canvas into 3 section
+    [v] 各種描画領域の確保

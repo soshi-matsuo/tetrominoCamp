@@ -71,12 +71,7 @@ class AccountForMatch {
     }
 
     applyDamage(clearedRows) {
-        let damage = 0;
-        clearedRows.forEach(row => {
-            row.forEach(cell => {
-                if (cell === this.currentTurn) damage++;
-            });
-        });
+        const damage = clearedRows.length;
 
         if (this.currentTurn === TURN.PLAYER1) {
             this.minusPlayer2HP(damage);
@@ -96,13 +91,16 @@ class AccountForMatch {
     }
 
     draw(ctx) {
-        ctx.font = '1px Arial';
-        ctx.fillStyle = 'black';
-        ctx.fillText(`LINES: ${this.lines}`, 12, 2);
-        ctx.fillText(`LEVEL: ${this.level}`, 12, 3);
-        // player1 data
-        ctx.fillText(`P1 HP: ${this.player1HP}`, 12, 4);
-        // player2 data
-        ctx.fillText(`P2 HP: ${this.player2HP}`, 12, 5);
+        ctx.lineWidth = 1;
+        // secure turn area
+        ctx.strokeRect(0, 0, ACCOUNT_SCREEN_WIDTH, KEY_MAP_HEIGHT);
+        // secure next area
+        ctx.strokeRect(ACCOUNT_SCREEN_WIDTH + BOARD_SCREEN_WIDTH, 0, ACCOUNT_SCREEN_WIDTH, KEY_MAP_HEIGHT);
+        // secure HP and avator area
+        ctx.strokeRect(0, KEY_MAP_HEIGHT, ACCOUNT_SCREEN_WIDTH, BOARD_SCREEN_HEIGHT - KEY_MAP_HEIGHT);
+        ctx.strokeRect(ACCOUNT_SCREEN_WIDTH + BOARD_SCREEN_WIDTH, KEY_MAP_HEIGHT, ACCOUNT_SCREEN_WIDTH, BOARD_SCREEN_HEIGHT - KEY_MAP_HEIGHT);
+        // secure keyMap area
+        ctx.strokeRect(0, BOARD_SCREEN_HEIGHT, KEY_MAP_WIDTH, KEY_MAP_HEIGHT);
+        ctx.strokeRect(KEY_MAP_WIDTH, BOARD_SCREEN_HEIGHT, KEY_MAP_WIDTH, KEY_MAP_HEIGHT);
     }
 }

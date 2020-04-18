@@ -17,7 +17,7 @@ class Piece {
         this.y = 0;
     }
 
-    draw() {
+    draw(offsetX, offsetY) {
         this.ctx.fillStyle = this.color;
         this.shape.forEach((row, y) => {
             row.forEach((value, x) => {
@@ -25,7 +25,7 @@ class Piece {
                 // x, y(args of callback) gives the position of the cell in the shape
                 // this.x + x is then the position of the cell on the board
                 if (value > 0) {
-                    this.ctx.fillRect(this.x + x, this.y + y, 1, 1);
+                    this.ctx.fillRect(offsetX + (this.x + x) * BLOCK_SIZE, offsetY + (this.y + y) * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
                 }
             });
         });
@@ -45,7 +45,7 @@ class Piece {
 
     setNextPiecePosition() {
         this.x = 12;
-        this.y = 12;
+        this.y = 3;
     }
 
     randomizeTetrominoTypes(noOfTypes, colorId) {

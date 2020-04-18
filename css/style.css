@@ -14,7 +14,7 @@
 }
 
 .game-board {
-    border: solid 2px;
+    border: solid 1px green;
 }
 
 .play-button {

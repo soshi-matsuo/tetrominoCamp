@@ -26,10 +26,15 @@ class Board {
         this.next.setNextPiecePosition();
     }
 
-    draw() {
-        this.piece.draw();
-        this.next.draw();
-        this.drawBoard();
+    draw(offsetX, offsetY) {
+        // draw border
+        const lineWidthVal = 5;
+        this.ctx.lineWidth = lineWidthVal;
+        this.ctx.strokeRect(offsetX - (lineWidthVal / 2), offsetY - (lineWidthVal / 2), BOARD_SCREEN_WIDTH + lineWidthVal, BOARD_SCREEN_HEIGHT + lineWidthVal);
+        // draw piece and board
+        this.piece.draw(offsetX, offsetY);
+        this.next.draw(offsetX, offsetY);
+        this.drawBoard(offsetX, offsetY);
     }
 
     movePiece(horizontal, vertical) {
@@ -96,12 +101,12 @@ class Board {
         this.updateByClearedLines(rows);
     }
 
-    drawBoard() {
+    drawBoard(offsetX, offsetY) {
         this.grid.forEach((row, y) => {
             row.forEach((value, x) => {
                 if (value > 0) {
                     this.ctx.fillStyle = COLORS[value];
-                    this.ctx.fillRect(x, y, 1, 1);
+                    this.ctx.fillRect(offsetX + x * BLOCK_SIZE, offsetY + y * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
                 }
             });
         });
