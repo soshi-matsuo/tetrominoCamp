@@ -1,17 +1,14 @@
 -- doing
-  [ ] clarify UI about game situation
-    [ ] ピンチ、チャンスが分からん（ゲームとしての盤面の状況把握が難しい(UI matter?)）
-    [ ] LINES, LEVELは表示不要
-    [ ] 赤青のどっちがp1, p2なん？初見じゃ分からん
-      [ ] 画面上にキー操作方法も出しっぱ
-  ※general fb from jeri：テトリス二人でやっただけ？対戦としての面白さにはピンとこず
+  [ ] draw grid board
+  [ ] refactor accountForMatch.js
+    [ ] group animation functions
 
 -- to do
 対人戦に対応させたい
   turn system（プレイヤーが交代する）
   盤面は共有したままテトリスをプレイしていく
   GAMEOVER段階で、自分が残したミノが多いor少ない側の勝ち
-  
+
   ex user story
   - push play
   - while continuing game
@@ -25,13 +22,15 @@
 
   --> have to implement
   [ ] enrich GUI for entertainment
+    [ ] use google game font (https://fonts.google.com/specimen/Press+Start+2P?query=press+start)
     [ ] player account data on each side of board
       [ ] HP should be illustrated as a bar
         [ ] every hp update should fire an animation
         [ ] once hp becomes 0, some animation should be fired
       [ ] player avator animation per some events
     [ ] animation on clear line
-
+    [ ] move PLAY button to canvas
+      [ ] 'press [space] to play' ??
 
 -- done
 ---- refactor existing code
@@ -102,7 +101,14 @@
 [v] ルールが難しい
   [v] ダメージ固定で良い（行数依存）
 
-[ ] clarify UI about game situation
+[v] clarify UI about game situation
   [v] delete ctx.scale()
   [v] divide canvas into 3 section
     [v] 各種描画領域の確保
+  [v] ピンチ、チャンスが分からん（ゲームとしての盤面の状況把握が難しい(UI matter?)）
+  [v] LINES, LEVELは表示不要
+  [v] 赤青のどっちがp1, p2なん？初見じゃ分からん
+    [v] 画面上にキー操作方法も出しっぱ
+    [v] draw avator
+    [v] change avator face according to events
+  ※general fb from jeri：テトリス二人でやっただけ？対戦としての面白さにはピンとこず

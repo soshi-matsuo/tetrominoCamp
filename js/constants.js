@@ -1,4 +1,6 @@
 'use strict'
+const IN_PRODUCTION = true;
+
 const COLS = 10;
 const ROWS = 20;
 const BLOCK_SIZE = 30;
@@ -12,9 +14,27 @@ const KEY_MAP_HEIGHT = 200;
 const SCREEN_WIDTH = BOARD_SCREEN_WIDTH + ACCOUNT_SCREEN_WIDTH * 2;
 const SCREEN_HEIGHT = BOARD_SCREEN_HEIGHT + KEY_MAP_HEIGHT;
 const KEY_MAP_WIDTH = SCREEN_WIDTH / 2;
+const PLAYER1_HP_X = 0;
+const PLAYER1_HP_Y = 250;
+const PLAYER2_HP_X = 520;
+const PLAYER2_HP_Y = 250;
+const PLAYER1_X = 50;
+const PLAYER1_Y = 300;
+const PLAYER2_X = 570;
+const PLAYER2_Y = 300;
+const TURN_X = 70;
+const TURN_Y = 50;
+const NEXT_PIECE_X = 12;
+const NEXT_PIECE_Y = 3;
+const NEXT_X = 570;
+const NEXT_Y = 50;
 
 const OFFSET_X = ACCOUNT_SCREEN_WIDTH;
 const OFFSET_Y = 3;
+
+const PLAYER_STATUS_NORMAL = 0;
+const PLAYER_STATUS_DAMAGED = 1;
+const PLAYER_STATUS_DEAD = 2;
 
 const GAME_STATES = {
     READY: 0,

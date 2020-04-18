@@ -27,6 +27,6 @@
 .center {
     margin: auto;
     width: 50%; /* must be the same as canvas size */
-    border: 3px solid green; /*delete in production*/
+    /*border: 3px solid green; /*delete in production*/
     padding: 10px;
 }

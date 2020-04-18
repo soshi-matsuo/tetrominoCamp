@@ -44,8 +44,8 @@ class Piece {
     }
 
     setNextPiecePosition() {
-        this.x = 12;
-        this.y = 3;
+        this.x = NEXT_PIECE_X;
+        this.y = NEXT_PIECE_Y;
     }
 
     randomizeTetrominoTypes(noOfTypes, colorId) {

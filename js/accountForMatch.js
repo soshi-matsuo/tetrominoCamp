@@ -1,15 +1,65 @@
-class AccountForMatch {
+class AccountForMatch extends Drawable {
     level;
     lines;
     player1HP;
     player2HP;
     setTimeLevel;
     currentTurn;
+    images;
+    timeElapsed;
+    animDuration;
+    playerStatus;
 
-    constructor(setTimeLevel) {
+    constructor(setTimeLevel, ctx) {
+        super(ctx, IN_PRODUCTION);
         this.resetAccount();
 
         this.setTimeLevel = setTimeLevel;
+
+        this.images = {
+            player1: {
+                normal: {
+                    src: '../img/player1/player1_normal.png',
+                    width: 100,
+                    height: 100,
+                },
+                damaged: {
+                    src: '../img/player1/player1_damaged.png',
+                    width: 100,
+                    height: 100,
+                },
+                front: {
+                    src: '../img/player1/player1_front.png',
+                    width: 100,
+                    height: 100,
+                }
+            },
+            player2: {
+                normal: {
+                    src: '../img/player2/player2_normal.png',
+                    width: 100,
+                    height: 100,
+                },
+                damaged: {
+                    src: '../img/player2/player2_damaged.png',
+                    width: 100,
+                    height: 100,
+                },
+                front: {
+                    src: '../img/player2/player2_front.png',
+                    width: 100,
+                    height: 100,
+                }
+            }
+        };
+
+        this.playerStatus = {
+            player1: PLAYER_STATUS_NORMAL,
+            player2: PLAYER_STATUS_NORMAL,
+        }
+
+        this.timeElapsed = -1;
+        this.animDuration = -1;
     }
 
     setLevel(level) {
@@ -20,21 +70,21 @@ class AccountForMatch {
         this.lines = lines;
     }
 
-    setPlayer1HP(player1HP) {
-        if (player1HP <= 0) player1HP = 0;
-        this.player1HP = player1HP;
-    }
-
-    setPlayer2HP(player2HP) {
-        if (player2HP <= 0) player2HP = 0;
-        this.player2HP = player2HP;
+    setPlayerHP(playerId, playerHP) {
+        if (playerHP <= 0) playerHP = 0;
+        if (playerId == TURN.PLAYER1) {
+            this.player1HP = playerHP;
+        }
+        else {
+            this.player2HP = playerHP;
+        }
     }
 
     resetAccount() {
         this.setLevel(0);
         this.setLines(0);
-        this.setPlayer1HP(MAX_HP);
-        this.setPlayer2HP(MAX_HP);
+        this.setPlayerHP(TURN.PLAYER1, MAX_HP);
+        this.setPlayerHP(TURN.PLAYER2, MAX_HP);
     }
 
     addLines(lines) {
@@ -74,33 +124,154 @@ class AccountForMatch {
         const damage = clearedRows.length;
 
         if (this.currentTurn === TURN.PLAYER1) {
-            this.minusPlayer2HP(damage);
+            this.minusPlayerHP(TURN.PLAYER2, damage);
+            this.changePlayerStatus(TURN.PLAYER2, PLAYER_STATUS_DAMAGED, 1000);
         } else {
-            this.minusPlayer1HP(damage);
+            this.minusPlayerHP(TURN.PLAYER1, damage);
+            this.changePlayerStatus(TURN.PLAYER1, PLAYER_STATUS_DAMAGED, 1000);
         }
     }
 
-    minusPlayer1HP(damage) {
-        const newHP = this.player1HP - damage;
-        this.setPlayer1HP(newHP);
+    changePlayerStatus(playerId, state, duration=-1, stateBack=PLAYER_STATUS_NORMAL) {
+        if (playerId == TURN.PLAYER1) {
+            this.playerStatus.player1 = state;
+            if (duration > -1)
+                setTimeout(() => {
+                    this.playerStatus.player1 = stateBack;
+                }, duration);
+        }
+        else {
+            this.playerStatus.player2 = state;
+            if (duration > -1)
+                setTimeout(() => {
+                    this.playerStatus.player2 = stateBack;
+                }, duration);
+        }
     }
 
-    minusPlayer2HP(damage) {
-        const newHP = this.player2HP - damage;
-        this.setPlayer2HP(newHP);
+    updateTimeElapsed() {
+        this.timeElapsed++;
+        this.timeElapsed / 60;
     }
 
-    draw(ctx) {
-        ctx.lineWidth = 1;
+    minusPlayerHP(playerId, damage) {
+        const newHP = (playerId == TURN.PLAYER1) ? 
+            this.player1HP - damage :
+            this.player2HP - damage;
+        this.setPlayerHP(playerId, newHP);
+    }
+
+    draw() {
         // secure turn area
-        ctx.strokeRect(0, 0, ACCOUNT_SCREEN_WIDTH, KEY_MAP_HEIGHT);
+        this.drawGuideBoxOnDebug(
+            0, 
+            0, 
+            ACCOUNT_SCREEN_WIDTH,
+            KEY_MAP_HEIGHT,
+            'TURN'
+        );
+        this.drawText("TURN", TURN_X, TURN_Y, 20);
+        switch(this.currentTurn) {
+            case TURN.PLAYER1:
+                this.drawImage(this.images.player1.front, TURN_X, TURN_Y + 30);
+                break;
+            case TURN.PLAYER2:
+                this.drawImage(this.images.player2.front, TURN_X, TURN_Y + 30);
+                break;
+            default:
+                // not started yet!
+                break;
+        }
         // secure next area
-        ctx.strokeRect(ACCOUNT_SCREEN_WIDTH + BOARD_SCREEN_WIDTH, 0, ACCOUNT_SCREEN_WIDTH, KEY_MAP_HEIGHT);
+        this.drawGuideBoxOnDebug(
+            ACCOUNT_SCREEN_WIDTH + BOARD_SCREEN_WIDTH,
+            0,
+            ACCOUNT_SCREEN_WIDTH,
+            KEY_MAP_HEIGHT,
+            'NEXT'
+        );
+        this.drawText("NEXT", NEXT_X, NEXT_Y, 20)
         // secure HP and avator area
-        ctx.strokeRect(0, KEY_MAP_HEIGHT, ACCOUNT_SCREEN_WIDTH, BOARD_SCREEN_HEIGHT - KEY_MAP_HEIGHT);
-        ctx.strokeRect(ACCOUNT_SCREEN_WIDTH + BOARD_SCREEN_WIDTH, KEY_MAP_HEIGHT, ACCOUNT_SCREEN_WIDTH, BOARD_SCREEN_HEIGHT - KEY_MAP_HEIGHT);
+        this.drawGuideBoxOnDebug(
+            0,
+            KEY_MAP_HEIGHT,
+            ACCOUNT_SCREEN_WIDTH,
+            BOARD_SCREEN_HEIGHT - KEY_MAP_HEIGHT,
+            'PLAYER 1 (RED)'
+        );
+        this.drawText(
+            `HP: ${this.player1HP}`,
+            PLAYER1_HP_X,
+            PLAYER1_HP_Y,
+            20
+        );
+        switch(this.playerStatus.player1) {
+            case PLAYER_STATUS_NORMAL:
+                this.drawImage(this.images.player1.normal, PLAYER1_X, PLAYER1_Y);
+                break;
+            case PLAYER_STATUS_DAMAGED:
+                this.drawImage(this.images.player1.damaged, PLAYER1_X, PLAYER1_Y);
+                break;
+        }
+        this.drawGuideBoxOnDebug(
+            ACCOUNT_SCREEN_WIDTH + BOARD_SCREEN_WIDTH,
+            KEY_MAP_HEIGHT,
+            ACCOUNT_SCREEN_WIDTH,
+            BOARD_SCREEN_HEIGHT - KEY_MAP_HEIGHT,
+            'PLAYER 2 (BLUE)'
+        );
+        this.drawText(
+            `HP: ${this.player2HP}`,
+            PLAYER2_HP_X,
+            PLAYER2_HP_Y,
+            20
+        );
+        switch(this.playerStatus.player2) {
+            case PLAYER_STATUS_NORMAL:
+                this.drawImage(this.images.player2.normal, PLAYER2_X, PLAYER2_Y);
+                break;
+            case PLAYER_STATUS_DAMAGED:
+                this.drawImage(this.images.player2.damaged, PLAYER2_X, PLAYER2_Y);
+                break;
+        }
         // secure keyMap area
-        ctx.strokeRect(0, BOARD_SCREEN_HEIGHT, KEY_MAP_WIDTH, KEY_MAP_HEIGHT);
-        ctx.strokeRect(KEY_MAP_WIDTH, BOARD_SCREEN_HEIGHT, KEY_MAP_WIDTH, KEY_MAP_HEIGHT);
+        this.drawGuideBoxOnDebug(
+            0,
+            BOARD_SCREEN_HEIGHT,
+            KEY_MAP_WIDTH,
+            KEY_MAP_HEIGHT,
+            'KEY MAP (PLAYER 1)'
+        );
+        this.drawText(
+            `left: ←, right: →, down: ↓`,
+            0,
+            BOARD_SCREEN_HEIGHT + 50,
+            12
+        );
+        this.drawText(
+            `hard drop: [space], rotate: ↑`,
+            0,
+            BOARD_SCREEN_HEIGHT + 50 + 12,
+            12
+        );
+        this.drawGuideBoxOnDebug(
+            KEY_MAP_WIDTH,
+            BOARD_SCREEN_HEIGHT,
+            KEY_MAP_WIDTH,
+            KEY_MAP_HEIGHT,
+            'KEY MAP (PLAYER 2)'
+        );
+        this.drawText(
+            `left: a, right: d, down: s`,
+            KEY_MAP_WIDTH,
+            BOARD_SCREEN_HEIGHT + 50,
+            12
+        );
+        this.drawText(
+            `hard drop: c, rotate: w`,
+            KEY_MAP_WIDTH,
+            BOARD_SCREEN_HEIGHT + 50 + 12,
+            12
+        );
     }
 }

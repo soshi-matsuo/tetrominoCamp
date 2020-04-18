@@ -76,7 +76,7 @@ class GameMaster {
                 return elapsed;
             }
         };
-        this.account = new AccountForMatch(this.time.setLevel.bind(this));
+        this.account = new AccountForMatch(this.time.setLevel.bind(this), this.ctx);
         this.turn.addListener(this.account.onTurnChanged.bind(this.account));
         this.board = new Board(this.ctx, this.account.updateByClearedLines.bind(this.account));
 
@@ -191,7 +191,7 @@ class GameMaster {
             default:
                 break;
         }
-        this.account.draw(this.ctx);
+        this.account.draw();
     }
 
     loopGame(now = 0) {
