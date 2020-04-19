@@ -12,46 +12,19 @@ class AccountForMatch extends Drawable {
 
     constructor(setTimeLevel, ctx) {
         super(ctx, IN_PRODUCTION);
+        const imageData = [
+            { p1Normal: 'img/player1/player1_normal.png' },
+            { p1Damaged: 'img/player1/player1_damaged.png' },
+            { p1Front: 'img/player1/player1_front.png' },
+            { p2Normal: 'img/player2/player2_normal.png' },
+            { p2Damaged: 'img/player2/player2_damaged.png' },
+            { p2Front: 'img/player2/player2_front.png' }
+        ];
+        this.loadImage(imageData);
+
         this.resetAccount();
 
         this.setTimeLevel = setTimeLevel;
-
-        this.images = {
-            player1: {
-                normal: {
-                    src: '../img/player1/player1_normal.png',
-                    width: 100,
-                    height: 100,
-                },
-                damaged: {
-                    src: '../img/player1/player1_damaged.png',
-                    width: 100,
-                    height: 100,
-                },
-                front: {
-                    src: '../img/player1/player1_front.png',
-                    width: 100,
-                    height: 100,
-                }
-            },
-            player2: {
-                normal: {
-                    src: '../img/player2/player2_normal.png',
-                    width: 100,
-                    height: 100,
-                },
-                damaged: {
-                    src: '../img/player2/player2_damaged.png',
-                    width: 100,
-                    height: 100,
-                },
-                front: {
-                    src: '../img/player2/player2_front.png',
-                    width: 100,
-                    height: 100,
-                }
-            }
-        };
 
         this.playerStatus = {
             player1: PLAYER_STATUS_NORMAL,
@@ -173,10 +146,10 @@ class AccountForMatch extends Drawable {
         this.drawText("TURN", TURN_X, TURN_Y, 20);
         switch(this.currentTurn) {
             case TURN.PLAYER1:
-                this.drawImage(this.images.player1.front, TURN_X, TURN_Y + 30);
+                this.drawImage('p1Front', TURN_X, TURN_Y + 30);
                 break;
             case TURN.PLAYER2:
-                this.drawImage(this.images.player2.front, TURN_X, TURN_Y + 30);
+                this.drawImage('p2Front', TURN_X, TURN_Y + 30);
                 break;
             default:
                 // not started yet!
@@ -207,10 +180,10 @@ class AccountForMatch extends Drawable {
         );
         switch(this.playerStatus.player1) {
             case PLAYER_STATUS_NORMAL:
-                this.drawImage(this.images.player1.normal, PLAYER1_X, PLAYER1_Y);
+                this.drawImage('p1Normal', PLAYER1_X, PLAYER1_Y);
                 break;
             case PLAYER_STATUS_DAMAGED:
-                this.drawImage(this.images.player1.damaged, PLAYER1_X, PLAYER1_Y);
+                this.drawImage('p1Damaged', PLAYER1_X, PLAYER1_Y);
                 break;
         }
         this.drawGuideBoxOnDebug(
@@ -228,10 +201,10 @@ class AccountForMatch extends Drawable {
         );
         switch(this.playerStatus.player2) {
             case PLAYER_STATUS_NORMAL:
-                this.drawImage(this.images.player2.normal, PLAYER2_X, PLAYER2_Y);
+                this.drawImage('p2Normal', PLAYER2_X, PLAYER2_Y);
                 break;
             case PLAYER_STATUS_DAMAGED:
-                this.drawImage(this.images.player2.damaged, PLAYER2_X, PLAYER2_Y);
+                this.drawImage('p2Damaged', PLAYER2_X, PLAYER2_Y);
                 break;
         }
         // secure keyMap area

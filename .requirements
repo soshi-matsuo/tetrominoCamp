@@ -1,7 +1,5 @@
 -- doing
-  [ ] draw grid board
-  [ ] refactor accountForMatch.js
-    [ ] group animation functions
+
 
 -- to do
 対人戦に対応させたい
@@ -31,6 +29,8 @@
     [ ] animation on clear line
     [ ] move PLAY button to canvas
       [ ] 'press [space] to play' ??
+  [ ] refactor drawing logics
+    [ ] group animation functions
 
 -- done
 ---- refactor existing code
@@ -97,6 +97,7 @@
   [v] align board to the center of the screen
   [v] use canvas instead of DOM?
     [v] single canvas to draw all.
+  [v] draw grid board
 
 [v] ルールが難しい
   [v] ダメージ固定で良い（行数依存）
@@ -111,4 +112,5 @@
     [v] 画面上にキー操作方法も出しっぱ
     [v] draw avator
     [v] change avator face according to events
+      [v] fix around drawImage()
   ※general fb from jeri：テトリス二人でやっただけ？対戦としての面白さにはピンとこず

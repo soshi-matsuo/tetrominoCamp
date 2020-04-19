@@ -1,4 +1,4 @@
-class Board {
+class Board extends Drawable{
     ctx;
     grid;
     piece;
@@ -8,6 +8,7 @@ class Board {
     updateByClearedLines;
 
     constructor(ctx, updateByClearedLines) {
+        super(ctx, IN_PRODUCTION);
         this.ctx = ctx;
         this.updateByClearedLines = updateByClearedLines;
     }
@@ -27,10 +28,11 @@ class Board {
     }
 
     draw(offsetX, offsetY) {
+        // draw grid border
+        this.drawGrid(offsetX, offsetY, BOARD_SCREEN_WIDTH, BOARD_SCREEN_HEIGHT);
         // draw border
         const lineWidthVal = 5;
-        this.ctx.lineWidth = lineWidthVal;
-        this.ctx.strokeRect(offsetX - (lineWidthVal / 2), offsetY - (lineWidthVal / 2), BOARD_SCREEN_WIDTH + lineWidthVal, BOARD_SCREEN_HEIGHT + lineWidthVal);
+        this.drawStrokeRect(offsetX - (lineWidthVal / 2), offsetY - (lineWidthVal / 2), BOARD_SCREEN_WIDTH + lineWidthVal, BOARD_SCREEN_HEIGHT + lineWidthVal, lineWidthVal);
         // draw piece and board
         this.piece.draw(offsetX, offsetY);
         this.next.draw(offsetX, offsetY);
@@ -105,11 +107,21 @@ class Board {
         this.grid.forEach((row, y) => {
             row.forEach((value, x) => {
                 if (value > 0) {
-                    this.ctx.fillStyle = COLORS[value];
-                    this.ctx.fillRect(offsetX + x * BLOCK_SIZE, offsetY + y * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
+                    this.drawFillRect(offsetX + x * BLOCK_SIZE, offsetY + y * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE, COLORS[value]);
                 }
             });
         });
+    }
+
+    drawGrid(offsetX, offsetY, width, height) {
+        const lineWidthVal = 1;
+        const lineColor = 'grey';
+        for (let x = BLOCK_SIZE; x < width; x += BLOCK_SIZE) {
+            this.drawLine(offsetX + x, offsetY, offsetX + x, offsetY + height, lineWidthVal, lineColor);
+        }
+        for (let y = BLOCK_SIZE; y < height; y += BLOCK_SIZE) {
+            this.drawLine(offsetX, offsetY + y, offsetX + width, offsetY + y, lineWidthVal, lineColor);
+        }
     }
 
     freeze() {

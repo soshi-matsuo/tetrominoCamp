@@ -1,4 +1,4 @@
-class Piece {
+class Piece extends Drawable {
     x;
     y;
     color;
@@ -7,6 +7,7 @@ class Piece {
     typeId;
 
     constructor(ctx, color) {
+        super(ctx, IN_PRODUCTION);
         this.ctx = ctx;
         this.color = color;
         const colorId = COLORS.indexOf(color);
@@ -18,14 +19,13 @@ class Piece {
     }
 
     draw(offsetX, offsetY) {
-        this.ctx.fillStyle = this.color;
         this.shape.forEach((row, y) => {
             row.forEach((value, x) => {
                 // this.x, this.y gives the left upper position of the shape
                 // x, y(args of callback) gives the position of the cell in the shape
                 // this.x + x is then the position of the cell on the board
                 if (value > 0) {
-                    this.ctx.fillRect(offsetX + (this.x + x) * BLOCK_SIZE, offsetY + (this.y + y) * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
+                    this.drawFillRect(offsetX + (this.x + x) * BLOCK_SIZE, offsetY + (this.y + y) * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE, this.color);
                 }
             });
         });

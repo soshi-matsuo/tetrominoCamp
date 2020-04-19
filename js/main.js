@@ -153,8 +153,7 @@ class GameMaster {
 
         const isDropped = this.board.drop();
         if (this.board.isReachedRoof()) {
-            if (this.turn.getTurn() === TURN.PLAYER1) this.account.minusPlayer1HP(parseInt(MAX_HP / 3));
-            if (this.turn.getTurn() === TURN.PLAYER2) this.account.minusPlayer2HP(parseInt(MAX_HP / 3));
+            this.account.minusPlayerHP(this.turn.getTurn(), parseInt(MAX_HP / 3));
             this.gameOver();
             return;
         }

@@ -28,6 +28,8 @@ const NEXT_PIECE_X = 12;
 const NEXT_PIECE_Y = 3;
 const NEXT_X = 570;
 const NEXT_Y = 50;
+const IMAGE_WIDTH = 100;
+const IMAGE_HEIGHT = 100;
 
 const OFFSET_X = ACCOUNT_SCREEN_WIDTH;
 const OFFSET_Y = 3;

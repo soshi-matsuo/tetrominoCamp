@@ -1,6 +1,7 @@
 class Drawable {
     ctx;
     inProduction;
+    imageElements = {};
     constructor(ctx, inProduction) {
         this.ctx = ctx;
         this.inProduction = inProduction;
@@ -27,9 +28,35 @@ class Drawable {
         this.ctx.fillText(text, x, y_);
     }
 
-    drawImage(imageData, x, y) {
-        const image = new Image(imageData.width, imageData.height);
-        image.src = imageData.src;
-        this.ctx.drawImage(image, x, y);
+    drawStrokeRect(x, y, width, height, lineWidth, lineColor = 'black') {
+        this.ctx.strokeStyle = lineColor;
+        this.ctx.lineWidth = lineWidth;
+        this.ctx.strokeRect(x, y, width, height);
+    }
+
+    drawFillRect(x, y, width, height, color) {
+        this.ctx.fillStyle = color;
+        this.ctx.fillRect(x, y, width, height);
+    }
+
+    drawLine(beginX, beginY, endX, endY, lineWidth, color) {
+        this.ctx.lineWidth = lineWidth;
+        this.ctx.strokeStyle = color;
+        this.ctx.beginPath();
+        this.ctx.moveTo(beginX, beginY);
+        this.ctx.lineTo(endX, endY);
+        this.ctx.stroke();
+    }
+
+    drawImage(imageKeyStr, x, y) {
+        this.ctx.drawImage(this.imageElements[imageKeyStr], x, y);
+    }
+
+    loadImage(imageData) {
+        imageData.forEach(e => {
+            const imageElement = new Image(IMAGE_WIDTH, IMAGE_HEIGHT);
+            imageElement.src = Object.values(e)[0];
+            this.imageElements[Object.keys(e)[0]] = imageElement;
+        });
     }
 }
