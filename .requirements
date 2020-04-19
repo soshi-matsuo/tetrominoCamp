@@ -1,5 +1,14 @@
 -- doing
-
+[ ] fix pause and game over size
+  [v] pause
+  [ ] gameover
+  
+[ ] player account data on each side of board
+  [ ] HP should be illustrated as a bar
+    [v] create hp bars
+    [ ] every hp update should fire an animation
+    [ ] once hp becomes 0, some animation should be fired
+  [ ] player avator animation per some events
 
 -- to do
 対人戦に対応させたい
@@ -20,12 +29,6 @@
 
   --> have to implement
   [ ] enrich GUI for entertainment
-    [ ] use google game font (https://fonts.google.com/specimen/Press+Start+2P?query=press+start)
-    [ ] player account data on each side of board
-      [ ] HP should be illustrated as a bar
-        [ ] every hp update should fire an animation
-        [ ] once hp becomes 0, some animation should be fired
-      [ ] player avator animation per some events
     [ ] animation on clear line
     [ ] move PLAY button to canvas
       [ ] 'press [space] to play' ??
@@ -98,11 +101,13 @@
   [v] use canvas instead of DOM?
     [v] single canvas to draw all.
   [v] draw grid board
+  [v] use google game font (https://fonts.google.com/specimen/Press+Start+2P?query=press+start)
 
 [v] ルールが難しい
   [v] ダメージ固定で良い（行数依存）
 
 [v] clarify UI about game situation
+  [v] draw board on ready state
   [v] delete ctx.scale()
   [v] divide canvas into 3 section
     [v] 各種描画領域の確保

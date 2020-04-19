@@ -21,9 +21,10 @@ class Drawable {
         this.ctx.fillText(`x:${x}, y:${y}, w:${width}, h:${height}`, x + textOffsetX, y + fontSize * 2 + textOffsetY);
     }
 
-    drawText(text, x, y, fontSize) {
-        this.ctx.fillStyle = 'black';
-        this.ctx.font = `${fontSize}px sans-serif`;
+    drawText(text, x, y, fontSize, color = 'black', align = 'left') {
+        this.ctx.fillStyle = color;
+        this.ctx.font = `${fontSize}px "${FONT_DEFAULT}"`;
+        this.ctx.textAlign = align;
         const y_ = fontSize + y;
         this.ctx.fillText(text, x, y_);
     }

@@ -34,8 +34,8 @@ class Board extends Drawable{
         const lineWidthVal = 5;
         this.drawStrokeRect(offsetX - (lineWidthVal / 2), offsetY - (lineWidthVal / 2), BOARD_SCREEN_WIDTH + lineWidthVal, BOARD_SCREEN_HEIGHT + lineWidthVal, lineWidthVal);
         // draw piece and board
-        this.piece.draw(offsetX, offsetY);
-        this.next.draw(offsetX, offsetY);
+        this.piece?.draw(offsetX, offsetY);
+        this.next?.draw(offsetX, offsetY);
         this.drawBoard(offsetX, offsetY);
     }
 
@@ -104,7 +104,7 @@ class Board extends Drawable{
     }
 
     drawBoard(offsetX, offsetY) {
-        this.grid.forEach((row, y) => {
+        this.grid?.forEach((row, y) => {
             row.forEach((value, x) => {
                 if (value > 0) {
                     this.drawFillRect(offsetX + x * BLOCK_SIZE, offsetY + y * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE, COLORS[value]);

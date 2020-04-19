@@ -1,10 +1,12 @@
 'use strict'
 const IN_PRODUCTION = true;
 
+const FONT_DEFAULT = "Press Start 2P";
+
 const COLS = 10;
 const ROWS = 20;
 const BLOCK_SIZE = 30;
-const LINES_PER_LEVEL = 1;
+const LINES_PER_LEVEL = 3;
 const MAX_HP = 10;
 
 const BOARD_SCREEN_WIDTH = COLS * BLOCK_SIZE;
@@ -16,8 +18,18 @@ const SCREEN_HEIGHT = BOARD_SCREEN_HEIGHT + KEY_MAP_HEIGHT;
 const KEY_MAP_WIDTH = SCREEN_WIDTH / 2;
 const PLAYER1_HP_X = 0;
 const PLAYER1_HP_Y = 250;
+const PLAYER1_HPBAR_X = 170;
+const PLAYER1_HPBAR_Y = 300;
+const PLAYER1_HPBAR_FILL_COLOR = 'red';
 const PLAYER2_HP_X = 520;
 const PLAYER2_HP_Y = 250;
+const PLAYER2_HPBAR_X = 530;
+const PLAYER2_HPBAR_Y = 300;
+const PLAYER2_HPBAR_FILL_COLOR = 'blue';
+const PLAYER_HPBAR_WIDTH = 20;
+const PLAYER_HPBAR_HEIGHT = 307.5;
+const PLAYER_HPBAR_LINEWIDTH = 3;
+const PLAYER_HPBAR_BORDER_COLOR = 'black';
 const PLAYER1_X = 50;
 const PLAYER1_Y = 300;
 const PLAYER2_X = 570;

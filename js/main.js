@@ -1,4 +1,4 @@
-class GameMaster {
+class GameMaster extends Drawable {
     canvas;
     ctx;
     requestId;
@@ -12,6 +12,7 @@ class GameMaster {
     keyInputHandler;
 
     constructor() {
+        super(document.getElementById('board').getContext('2d'), IN_PRODUCTION);
         this.canvas = document.getElementById('board');
         this.ctx = this.canvas.getContext('2d');
         this.initCtx();
@@ -175,17 +176,18 @@ class GameMaster {
     draw() {
         switch (this.gameState) {
             case GAME_STATES.READY:
+                this.board.draw(OFFSET_X, OFFSET_Y);
                 break;
             case GAME_STATES.PLAYING:
                 this.board.draw(OFFSET_X, OFFSET_Y);
                 break;
             case GAME_STATES.PAUSE:
                 this.board.draw(OFFSET_X, OFFSET_Y);
-                this.drawPause(this.ctx);
+                this.drawPause();
                 break;
             case GAME_STATES.GAMEOVER:
                 this.board.draw(OFFSET_X, OFFSET_Y);
-                this.drawGameOver(this.ctx);
+                this.drawGameOver();
                 break;
             default:
                 break;
@@ -205,18 +207,20 @@ class GameMaster {
         this.keyInputHandler.setCommands(this.commands.gameOver);
     }
 
-    drawGameOver(ctx) {
-        ctx.fillStyle = 'black';
-        ctx.fillRect(1, 3, 8, 1.2);
-        ctx.font = '1px Arial';
-        ctx.fillStyle = 'red';
+    drawGameOver() {
+        let msg = '';
         if (this.account.player1HP < this.account.player2HP) {
-            ctx.fillText('Player2 Win!!', 1.8, 4);
+            msg = 'Player2 Win!!';
         } else if (this.account.player1HP > this.account.player2HP) {
-            ctx.fillText('Player1 Win!!', 1.8, 4);
+            msg = 'Player1 Win!!';
         } else {
-            ctx.fillText('DRAW', 1.8, 4);
+            msg = 'DRAW';
         }
+        const fontSize = 48;
+        const length = msg.length * fontSize;
+        const x = (SCREEN_WIDTH - length) * 0.5;
+        this.drawFillRect(x, SCREEN_HEIGHT * 0.28, length, 75, 'black');
+        this.drawText(msg, SCREEN_WIDTH * 0.5, SCREEN_HEIGHT * 0.3, fontSize, 'red', 'center');
     }
 
     pause() {
@@ -233,12 +237,9 @@ class GameMaster {
         }
     }
 
-    drawPause(ctx) {
-        ctx.fillStyle = 'black';
-        ctx.fillRect(1, 3, 8, 1.2);
-        ctx.font = '1px Arial';
-        ctx.fillStyle = 'yellow';
-        ctx.fillText('PAUSED', 3, 4);
+    drawPause() {
+        this.drawFillRect(OFFSET_X, SCREEN_HEIGHT * 0.28, BOARD_SCREEN_WIDTH, 75, 'black');
+        this.drawText('PAUSED', SCREEN_WIDTH * 0.5, SCREEN_HEIGHT * 0.3, 48, 'yellow', 'center');
     }
 }
 

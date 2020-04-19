@@ -135,7 +135,9 @@ class AccountForMatch extends Drawable {
     }
 
     draw() {
-        // secure turn area
+        /**
+         * TURN
+         */
         this.drawGuideBoxOnDebug(
             0, 
             0, 
@@ -155,7 +157,9 @@ class AccountForMatch extends Drawable {
                 // not started yet!
                 break;
         }
-        // secure next area
+        /**
+         * NEXT
+         */
         this.drawGuideBoxOnDebug(
             ACCOUNT_SCREEN_WIDTH + BOARD_SCREEN_WIDTH,
             0,
@@ -164,7 +168,9 @@ class AccountForMatch extends Drawable {
             'NEXT'
         );
         this.drawText("NEXT", NEXT_X, NEXT_Y, 20)
-        // secure HP and avator area
+        /**
+         * PLAYER1
+         */
         this.drawGuideBoxOnDebug(
             0,
             KEY_MAP_HEIGHT,
@@ -178,6 +184,22 @@ class AccountForMatch extends Drawable {
             PLAYER1_HP_Y,
             20
         );
+        const player1HPHeight = this.player1HP / MAX_HP * PLAYER_HPBAR_HEIGHT;
+        this.drawFillRect(
+            PLAYER1_HPBAR_X,
+            PLAYER1_HPBAR_Y + PLAYER_HPBAR_HEIGHT - player1HPHeight,
+            PLAYER_HPBAR_WIDTH,
+            player1HPHeight,
+            PLAYER1_HPBAR_FILL_COLOR
+        );
+        this.drawStrokeRect(
+            PLAYER1_HPBAR_X,
+            PLAYER1_HPBAR_Y,
+            PLAYER_HPBAR_WIDTH,
+            PLAYER_HPBAR_HEIGHT,
+            PLAYER_HPBAR_LINEWIDTH, 
+            PLAYER_HPBAR_BORDER_COLOR
+        );
         switch(this.playerStatus.player1) {
             case PLAYER_STATUS_NORMAL:
                 this.drawImage('p1Normal', PLAYER1_X, PLAYER1_Y);
@@ -186,6 +208,9 @@ class AccountForMatch extends Drawable {
                 this.drawImage('p1Damaged', PLAYER1_X, PLAYER1_Y);
                 break;
         }
+        /**
+         * PLAYER2
+         */
         this.drawGuideBoxOnDebug(
             ACCOUNT_SCREEN_WIDTH + BOARD_SCREEN_WIDTH,
             KEY_MAP_HEIGHT,
@@ -199,6 +224,22 @@ class AccountForMatch extends Drawable {
             PLAYER2_HP_Y,
             20
         );
+        const player2HPHeight = this.player2HP / MAX_HP * PLAYER_HPBAR_HEIGHT;
+        this.drawFillRect(
+            PLAYER2_HPBAR_X,
+            PLAYER2_HPBAR_Y + PLAYER_HPBAR_HEIGHT - player2HPHeight,
+            PLAYER_HPBAR_WIDTH,
+            player2HPHeight,
+            PLAYER2_HPBAR_FILL_COLOR
+        );
+        this.drawStrokeRect(
+            PLAYER2_HPBAR_X,
+            PLAYER2_HPBAR_Y,
+            PLAYER_HPBAR_WIDTH,
+            PLAYER_HPBAR_HEIGHT,
+            PLAYER_HPBAR_LINEWIDTH, 
+            PLAYER_HPBAR_BORDER_COLOR
+        );
         switch(this.playerStatus.player2) {
             case PLAYER_STATUS_NORMAL:
                 this.drawImage('p2Normal', PLAYER2_X, PLAYER2_Y);
@@ -207,7 +248,9 @@ class AccountForMatch extends Drawable {
                 this.drawImage('p2Damaged', PLAYER2_X, PLAYER2_Y);
                 break;
         }
-        // secure keyMap area
+        /**
+         * KEY MAP
+         */
         this.drawGuideBoxOnDebug(
             0,
             BOARD_SCREEN_HEIGHT,
