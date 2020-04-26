@@ -6,11 +6,13 @@ class Board extends Drawable{
     requestId;
     time;
     updateByClearedLines;
+    clearLineFx;
 
     constructor(ctx, updateByClearedLines) {
         super(ctx, IN_PRODUCTION);
         this.ctx = ctx;
         this.updateByClearedLines = updateByClearedLines;
+        this.clearLineFx = new LineClearEffect(CLEAR_LINE_COLORS, 15, ctx);
     }
 
     // Reset the board when we start a new game
@@ -37,6 +39,9 @@ class Board extends Drawable{
         this.piece?.draw(offsetX, offsetY);
         this.next?.draw(offsetX, offsetY);
         this.drawBoard(offsetX, offsetY);
+
+        // draw fx
+        this.clearLineFx.draw();
     }
 
     movePiece(horizontal, vertical) {
@@ -90,6 +95,7 @@ class Board extends Drawable{
     // updateByClearedLinesに渡したい
     clearLines() {
         let rows = [];
+        let lastClearedLineY = 0;
         this.grid.forEach((row, y) => {
             // if the row is filled with block
             if (row.every(value => value > 0)) {
@@ -98,9 +104,15 @@ class Board extends Drawable{
 
                 // add zero filled row at the top of grid
                 this.grid.unshift(Array(COLS).fill(0));
+
+                lastClearedLineY = y * BLOCK_SIZE;
             }
         });
         this.updateByClearedLines(rows);
+
+        if (rows.length > 0) {
+            this.clearLineFx.fire(210, lastClearedLineY, 20, BOARD_SCREEN_WIDTH, 20);
+        }
     }
 
     drawBoard(offsetX, offsetY) {

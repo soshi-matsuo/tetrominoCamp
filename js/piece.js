@@ -51,6 +51,6 @@ class Piece extends Drawable {
     randomizeTetrominoTypes(noOfTypes, colorId) {
         // typeId ranges 1 to 7
         const baseId = noOfTypes * (colorId - 1);
-        return baseId + Math.floor(Math.random() * noOfTypes + 1);
+        return baseId + randInt(1, noOfTypes);
     }
 }

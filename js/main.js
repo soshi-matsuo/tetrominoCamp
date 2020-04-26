@@ -5,6 +5,8 @@ class GameMaster extends Drawable {
     gameState;
     turn;
     commands;
+    winner; // 0: draw, 1: player1, 2: player2, -1: not set
+    gameOveredOnce;
 
     account;
     time;
@@ -19,6 +21,8 @@ class GameMaster extends Drawable {
 
         this.requestId = null;
         this.gameState = GAME_STATES.READY;
+
+        this.winner = -1;
 
         this.turn = {
             value: TURN.PLAYER1,
@@ -89,8 +93,8 @@ class GameMaster extends Drawable {
                 this.board.movePiece(0, 1);
             }).bind(this),
             player1: {
-                up: this.board.rotate.bind(this.board),
-                left: this.board.movePiece.bind(this.board, -1, 0),
+                up: this.board.rotate.bind(this.board), // this.account.btnCont.setAnimState('pressed');
+                left: this.board.movePiece.bind(this.board, -1, 0), //this.account.btnCont..... per each inputs
                 down: () => { this.commands.softDrop(); },
                 right: this.board.movePiece.bind(this.board, 1, 0),
                 space: () => { this.commands.hardDrop(); },
@@ -108,6 +112,8 @@ class GameMaster extends Drawable {
                 p: this.pause.bind(this),
             }
         };
+
+        this.gameOveredOnce = 0;
 
         this.keyInputHandler = new KeyInputHandler({});
     }
@@ -130,9 +136,11 @@ class GameMaster extends Drawable {
         this.time.init();
         this.board.reset(COLORS[this.turn.getTurn()], COLORS[this.turn.getNextTurn()]);
         this.keyInputHandler.setCommands(this.commands.player1);
+        this.gameOveredOnce = 0;
     }
 
     update(now) {
+        this.account.update();
         switch (this.gameState) {
             case GAME_STATES.READY:
                 break;
@@ -149,13 +157,21 @@ class GameMaster extends Drawable {
     }
 
     updatePlaying(now) {
+        this.board.clearLineFx.update();
         this.time.update(now);
         if (!this.time.isElapsedEnough(now)) return;
 
         const isDropped = this.board.drop();
         if (this.board.isReachedRoof()) {
-            this.account.minusPlayerHP(this.turn.getTurn(), parseInt(MAX_HP / 3));
-            this.gameOver();
+            // -- normal pattern --
+            // this.account.minusPlayerHP(this.turn.getTurn(), GAMEOVER_PENALTY);
+            // this.gameOver();
+            // -- a game without honor pattern --
+            if (this.gameOveredOnce == 0) {
+                this.gameOveredOnce++;
+            }
+            this.turn.switchTurn();
+            this.board.reset(COLORS[this.turn.getTurn()], COLORS[this.turn.getNextTurn()]);
             return;
         }
         if ((this.account.player1HP <= 0) || (this.account.player2HP <= 0)) {
@@ -174,12 +190,25 @@ class GameMaster extends Drawable {
     }
 
     draw() {
+        this.account.draw();
         switch (this.gameState) {
             case GAME_STATES.READY:
                 this.board.draw(OFFSET_X, OFFSET_Y);
                 break;
             case GAME_STATES.PLAYING:
                 this.board.draw(OFFSET_X, OFFSET_Y);
+                // -- jingi naki pattern --
+                if (this.gameOveredOnce >= 1 && this.gameOveredOnce <= 180) {
+                    const msg = "JINGI NAKI TATAKAI!!";
+                    const fontSize = 36;
+                    const length = msg.length * fontSize + 20;
+                    const x = (SCREEN_WIDTH - length) * 0.5;
+                    this.ctx.globalAlpha = 0.75;
+                    this.drawFillRect(x, SCREEN_HEIGHT * 0.28, length, 75, 'black');
+                    this.ctx.globalAlpha = 1;
+                    this.drawText(msg, SCREEN_WIDTH * 0.5, SCREEN_HEIGHT * 0.3, fontSize, 'red', 'center');
+                    this.gameOveredOnce++;
+                }
                 break;
             case GAME_STATES.PAUSE:
                 this.board.draw(OFFSET_X, OFFSET_Y);
@@ -192,7 +221,6 @@ class GameMaster extends Drawable {
             default:
                 break;
         }
-        this.account.draw();
     }
 
     loopGame(now = 0) {
@@ -203,24 +231,43 @@ class GameMaster extends Drawable {
     }
 
     gameOver() {
+        if (this.account.player1HP < this.account.player2HP){
+            this.winner = 2;
+            this.account.animationController2.setAnimationState('win');
+            this.account.animationController1.setAnimationState('dead');
+        }
+        else if (this.account.player1HP > this.account.player2HP) {
+            this.winner = 1;
+            this.account.animationController1.setAnimationState('win');
+            this.account.animationController2.setAnimationState('dead');
+        }
+        else {
+            this.winner = 0;
+            this.account.animationController1.setAnimationState('draw');
+            this.account.animationController2.setAnimationState('draw');
+        }
         this.gameState = GAME_STATES.GAMEOVER;
         this.keyInputHandler.setCommands(this.commands.gameOver);
     }
 
     drawGameOver() {
         let msg = '';
-        if (this.account.player1HP < this.account.player2HP) {
-            msg = 'Player2 Win!!';
-        } else if (this.account.player1HP > this.account.player2HP) {
+        let color = '';
+        if (this.winner == 2) {
+            msg = 'Player2 Win!!'; //#5e89f0
+            color = PLAYER2_WIN_COLOR;
+        } else if (this.winner == 1) {
             msg = 'Player1 Win!!';
+            color = PLAYER1_WIN_COLOR; //#f05e5e //creamy white: #fffbe5
         } else {
             msg = 'DRAW';
+            color = DRAW_COLOR;
         }
         const fontSize = 48;
-        const length = msg.length * fontSize;
+        const length = msg.length * fontSize + 20;
         const x = (SCREEN_WIDTH - length) * 0.5;
         this.drawFillRect(x, SCREEN_HEIGHT * 0.28, length, 75, 'black');
-        this.drawText(msg, SCREEN_WIDTH * 0.5, SCREEN_HEIGHT * 0.3, fontSize, 'red', 'center');
+        this.drawText(msg, SCREEN_WIDTH * 0.5, SCREEN_HEIGHT * 0.3, fontSize, color, 'center');
     }
 
     pause() {

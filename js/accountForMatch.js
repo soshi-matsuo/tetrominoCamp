@@ -5,34 +5,63 @@ class AccountForMatch extends Drawable {
     player2HP;
     setTimeLevel;
     currentTurn;
-    images;
-    timeElapsed;
-    animDuration;
-    playerStatus;
+    animationController1;
+    animationController2;
 
     constructor(setTimeLevel, ctx) {
         super(ctx, IN_PRODUCTION);
-        const imageData = [
-            { p1Normal: 'img/player1/player1_normal.png' },
-            { p1Damaged: 'img/player1/player1_damaged.png' },
-            { p1Front: 'img/player1/player1_front.png' },
-            { p2Normal: 'img/player2/player2_normal.png' },
-            { p2Damaged: 'img/player2/player2_damaged.png' },
-            { p2Front: 'img/player2/player2_front.png' }
-        ];
-        this.loadImage(imageData);
+
+        this.animationController1 = new AnimationController();
+        this.animationController2 = new AnimationController();
+
+        this.loadSpriteSheet('img/spritesheet_5x.png', 8, 2, 240)
+            .then(sprites => {
+                this.animationController2.addAnimation('idle');
+                this.animationController2.addAnimation('attack');
+                this.animationController2.addAnimation('damaged');
+                this.animationController2.addAnimation('dead');
+                this.animationController2.addAnimation('win');
+                this.animationController2.addAnimation('draw');
+                this.animationController2.addAnimation('face');
+                this.animationController2.setAnimationData('idle', sprites.slice(8, 13), true, 55);
+                this.animationController2.setAnimationData('attack', sprites.slice(13, 14));
+                this.animationController2.setAnimationData('damaged', sprites.slice(14, 15));
+                this.animationController2.setAnimationData('dead', sprites.slice(14, 15));
+                this.animationController2.setAnimationData('win', sprites.slice(13, 14));
+                this.animationController2.setAnimationData('draw', sprites.slice(8, 9));
+                this.animationController2.setAnimationData('face', sprites.slice(15, 16));
+                this.animationController2.connectAnimation('attack', 'idle', (params) => params.getAnimTime() > 600);
+                this.animationController2.connectAnimation('damaged', 'idle', (params) => params.getAnimTime() > 600);
+                this.animationController2.setAnimationState('idle');
+
+                this.animationController1.addAnimation('idle');
+                this.animationController1.addAnimation('attack');
+                this.animationController1.addAnimation('damaged');
+                this.animationController1.addAnimation('dead');
+                this.animationController1.addAnimation('win');
+                this.animationController1.addAnimation('draw');
+                this.animationController1.addAnimation('face');
+                this.animationController1.setAnimationData('idle', sprites.slice(0, 5), true, 55);
+                this.animationController1.setAnimationData('attack', sprites.slice(5, 6));
+                this.animationController1.setAnimationData('damaged', sprites.slice(6, 7));
+                this.animationController1.setAnimationData('dead', sprites.slice(6, 7));
+                this.animationController1.setAnimationData('win', sprites.slice(5, 6));
+                this.animationController1.setAnimationData('draw', sprites.slice(0, 1));
+                this.animationController1.setAnimationData('face', sprites.slice(7, 8));
+                this.animationController1.connectAnimation('attack', 'idle', (params) => params.getAnimTime() > 600);
+                this.animationController1.connectAnimation('damaged', 'idle', (params) => params.getAnimTime() > 600);
+                this.animationController1.setAnimationState('idle');
+
+                // btnAnimCont.addAnim('pressed');
+                // btnAnimCont.addAnim('not-pressed');
+                // btnAnimCont.connectAnimation('u-p', 'p', () => time > 200);
+                // btnAnimCont.setAnimationState('not-pressed');
+                // .. 10x
+            });
 
         this.resetAccount();
 
         this.setTimeLevel = setTimeLevel;
-
-        this.playerStatus = {
-            player1: PLAYER_STATUS_NORMAL,
-            player2: PLAYER_STATUS_NORMAL,
-        }
-
-        this.timeElapsed = -1;
-        this.animDuration = -1;
     }
 
     setLevel(level) {
@@ -58,6 +87,8 @@ class AccountForMatch extends Drawable {
         this.setLines(0);
         this.setPlayerHP(TURN.PLAYER1, MAX_HP);
         this.setPlayerHP(TURN.PLAYER2, MAX_HP);
+        this.animationController1.setAnimationState('idle');
+        this.animationController2.setAnimationState('idle');
     }
 
     addLines(lines) {
@@ -98,33 +129,13 @@ class AccountForMatch extends Drawable {
 
         if (this.currentTurn === TURN.PLAYER1) {
             this.minusPlayerHP(TURN.PLAYER2, damage);
-            this.changePlayerStatus(TURN.PLAYER2, PLAYER_STATUS_DAMAGED, 1000);
+            this.animationController2.setAnimationState('damaged');
+            this.animationController1.setAnimationState('attack');
         } else {
             this.minusPlayerHP(TURN.PLAYER1, damage);
-            this.changePlayerStatus(TURN.PLAYER1, PLAYER_STATUS_DAMAGED, 1000);
+            this.animationController1.setAnimationState('damaged');
+            this.animationController2.setAnimationState('attack');
         }
-    }
-
-    changePlayerStatus(playerId, state, duration=-1, stateBack=PLAYER_STATUS_NORMAL) {
-        if (playerId == TURN.PLAYER1) {
-            this.playerStatus.player1 = state;
-            if (duration > -1)
-                setTimeout(() => {
-                    this.playerStatus.player1 = stateBack;
-                }, duration);
-        }
-        else {
-            this.playerStatus.player2 = state;
-            if (duration > -1)
-                setTimeout(() => {
-                    this.playerStatus.player2 = stateBack;
-                }, duration);
-        }
-    }
-
-    updateTimeElapsed() {
-        this.timeElapsed++;
-        this.timeElapsed / 60;
     }
 
     minusPlayerHP(playerId, damage) {
@@ -134,32 +145,34 @@ class AccountForMatch extends Drawable {
         this.setPlayerHP(playerId, newHP);
     }
 
-    draw() {
-        /**
-         * TURN
-         */
+    update() {
+        this.animationController1.update();
+        this.animationController2.update();
+    }
+
+    drawTurn() {
         this.drawGuideBoxOnDebug(
-            0, 
-            0, 
+            0,
+            0,
             ACCOUNT_SCREEN_WIDTH,
             KEY_MAP_HEIGHT,
             'TURN'
         );
-        this.drawText("TURN", TURN_X, TURN_Y, 20);
+        this.drawText("TURN", TURN_X, TURN_Y, 20, 'black', 'center');
         switch(this.currentTurn) {
             case TURN.PLAYER1:
-                this.drawImage('p1Front', TURN_X, TURN_Y + 30);
+                this.drawImage(this.animationController1.getSpecifiedSprite('face', 0), TURN_AVATOR_X, TURN_AVATOR_Y + 30);
                 break;
             case TURN.PLAYER2:
-                this.drawImage('p2Front', TURN_X, TURN_Y + 30);
+                this.drawImage(this.animationController2.getSpecifiedSprite('face', 0), TURN_AVATOR_X, TURN_AVATOR_Y + 30);
                 break;
             default:
                 // not started yet!
                 break;
         }
-        /**
-         * NEXT
-         */
+    }
+
+    drawNext() {
         this.drawGuideBoxOnDebug(
             ACCOUNT_SCREEN_WIDTH + BOARD_SCREEN_WIDTH,
             0,
@@ -167,10 +180,10 @@ class AccountForMatch extends Drawable {
             KEY_MAP_HEIGHT,
             'NEXT'
         );
-        this.drawText("NEXT", NEXT_X, NEXT_Y, 20)
-        /**
-         * PLAYER1
-         */
+        this.drawText("NEXT", NEXT_X, NEXT_Y, 20, 'black', 'center');
+    }
+    
+    drawPlayer1() {
         this.drawGuideBoxOnDebug(
             0,
             KEY_MAP_HEIGHT,
@@ -179,7 +192,7 @@ class AccountForMatch extends Drawable {
             'PLAYER 1 (RED)'
         );
         this.drawText(
-            `HP: ${this.player1HP}`,
+            `HP`,
             PLAYER1_HP_X,
             PLAYER1_HP_Y,
             20
@@ -198,19 +211,14 @@ class AccountForMatch extends Drawable {
             PLAYER_HPBAR_WIDTH,
             PLAYER_HPBAR_HEIGHT,
             PLAYER_HPBAR_LINEWIDTH, 
-            PLAYER_HPBAR_BORDER_COLOR
+            PLAYER_HPBAR_BORDER_COLOR1
         );
-        switch(this.playerStatus.player1) {
-            case PLAYER_STATUS_NORMAL:
-                this.drawImage('p1Normal', PLAYER1_X, PLAYER1_Y);
-                break;
-            case PLAYER_STATUS_DAMAGED:
-                this.drawImage('p1Damaged', PLAYER1_X, PLAYER1_Y);
-                break;
-        }
-        /**
-         * PLAYER2
-         */
+        this.drawKeyMapPlayer1();
+        if (this.animationController1.getCurrentSprite())
+            this.drawImage(this.animationController1.getCurrentSprite(), PLAYER1_X, PLAYER1_Y);
+    }
+    
+    drawPlayer2() {
         this.drawGuideBoxOnDebug(
             ACCOUNT_SCREEN_WIDTH + BOARD_SCREEN_WIDTH,
             KEY_MAP_HEIGHT,
@@ -219,7 +227,7 @@ class AccountForMatch extends Drawable {
             'PLAYER 2 (BLUE)'
         );
         this.drawText(
-            `HP: ${this.player2HP}`,
+            `HP`,
             PLAYER2_HP_X,
             PLAYER2_HP_Y,
             20
@@ -238,19 +246,14 @@ class AccountForMatch extends Drawable {
             PLAYER_HPBAR_WIDTH,
             PLAYER_HPBAR_HEIGHT,
             PLAYER_HPBAR_LINEWIDTH, 
-            PLAYER_HPBAR_BORDER_COLOR
+            PLAYER_HPBAR_BORDER_COLOR2
         );
-        switch(this.playerStatus.player2) {
-            case PLAYER_STATUS_NORMAL:
-                this.drawImage('p2Normal', PLAYER2_X, PLAYER2_Y);
-                break;
-            case PLAYER_STATUS_DAMAGED:
-                this.drawImage('p2Damaged', PLAYER2_X, PLAYER2_Y);
-                break;
-        }
-        /**
-         * KEY MAP
-         */
+        this.drawKeyMapPlayer2();
+        if (this.animationController2.getCurrentSprite())    
+            this.drawImage(this.animationController2.getCurrentSprite(), PLAYER2_X, PLAYER2_Y);
+    }
+
+    drawKeyMapPlayer1() {
         this.drawGuideBoxOnDebug(
             0,
             BOARD_SCREEN_HEIGHT,
@@ -270,6 +273,9 @@ class AccountForMatch extends Drawable {
             BOARD_SCREEN_HEIGHT + 50 + 12,
             12
         );
+    }
+
+    drawKeyMapPlayer2() {
         this.drawGuideBoxOnDebug(
             KEY_MAP_WIDTH,
             BOARD_SCREEN_HEIGHT,
@@ -289,5 +295,12 @@ class AccountForMatch extends Drawable {
             BOARD_SCREEN_HEIGHT + 50 + 12,
             12
         );
+    }
+
+    draw() {
+        this.drawTurn();
+        this.drawNext();
+        this.drawPlayer1();
+        this.drawPlayer2();
     }
 }

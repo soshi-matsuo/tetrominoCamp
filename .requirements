@@ -1,14 +1,9 @@
 -- doing
-[ ] fix pause and game over size
-  [v] pause
-  [ ] gameover
-  
-[ ] player account data on each side of board
-  [ ] HP should be illustrated as a bar
-    [v] create hp bars
-    [ ] every hp update should fire an animation
-    [ ] once hp becomes 0, some animation should be fired
-  [ ] player avator animation per some events
+[ ] enrich GUI for entertainment
+  [ ] key map animation
+    [ ] (soshi)   impl.
+    [ ] (myshmeh) draw btn images
+  [ ] improve player 2 key mapping
 
 -- to do
 対人戦に対応させたい
@@ -28,12 +23,6 @@
     - determine winner
 
   --> have to implement
-  [ ] enrich GUI for entertainment
-    [ ] animation on clear line
-    [ ] move PLAY button to canvas
-      [ ] 'press [space] to play' ??
-  [ ] refactor drawing logics
-    [ ] group animation functions
 
 -- done
 ---- refactor existing code
@@ -102,11 +91,21 @@
     [v] single canvas to draw all.
   [v] draw grid board
   [v] use google game font (https://fonts.google.com/specimen/Press+Start+2P?query=press+start)
+  [v] fix pause and game over size
+    [v] pause
+    [v] gameover
+  [v] animation on clear line
+  [v] fix PLAY button layout
 
 [v] ルールが難しい
   [v] ダメージ固定で良い（行数依存）
 
 [v] clarify UI about game situation
+  [v] player account data on each side of board
+  [v] HP should be illustrated as a bar at minimum level
+    [v] create hp bars
+  [v] player avator animation per some events
+    [v] once hp becomes 0, some animation should be fired
   [v] draw board on ready state
   [v] delete ctx.scale()
   [v] divide canvas into 3 section
@@ -118,4 +117,7 @@
     [v] draw avator
     [v] change avator face according to events
       [v] fix around drawImage()
+  [v] refactor drawing logics
+    [v] group animation functions
   ※general fb from jeri：テトリス二人でやっただけ？対戦としての面白さにはピンとこず
+

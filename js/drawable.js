@@ -40,6 +40,15 @@ class Drawable {
         this.ctx.fillRect(x, y, width, height);
     }
 
+    drawFillArc(x, y, radius, color) {
+        this.ctx.beginPath();
+        this.ctx.fillStyle = color;
+        this.ctx.strokeStyle = color;
+        this.ctx.arc(x, y, radius, 0, 2 * Math.PI);
+        this.ctx.stroke();
+        this.ctx.fill();
+    }
+
     drawLine(beginX, beginY, endX, endY, lineWidth, color) {
         this.ctx.lineWidth = lineWidth;
         this.ctx.strokeStyle = color;
@@ -49,15 +58,26 @@ class Drawable {
         this.ctx.stroke();
     }
 
-    drawImage(imageKeyStr, x, y) {
-        this.ctx.drawImage(this.imageElements[imageKeyStr], x, y);
+    drawImage(imageElem, x, y) {
+        this.ctx.drawImage(imageElem, x, y);
     }
 
-    loadImage(imageData) {
-        imageData.forEach(e => {
-            const imageElement = new Image(IMAGE_WIDTH, IMAGE_HEIGHT);
-            imageElement.src = Object.values(e)[0];
-            this.imageElements[Object.keys(e)[0]] = imageElement;
-        });
+    async loadSpriteSheet(sheetSrc, spritesheetCol, spritesheetRow, spriteSize) {
+        return new Promise((resolve, reject) => {
+            const spritesheet = new Image();
+            spritesheet.onload = async () => {
+                const imageBitmaps = [];
+                for (let i = 0; i < spritesheetRow; i++) {
+                    for (let j = 0; j < spritesheetCol; j++) {
+                        imageBitmaps.push(createImageBitmap(spritesheet, j * spriteSize, i * spriteSize, spriteSize, spriteSize));
+                    }
+                }
+                const sprites = await Promise.all(imageBitmaps);
+                resolve(sprites);
+            }
+            spritesheet.src = sheetSrc;
+            spritesheet.onerror = reject;
+        }); 
+        
     }
 }

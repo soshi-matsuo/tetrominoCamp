@@ -8,14 +8,19 @@
         <link rel="stylesheet" href="./css/style.css" type="text/css">
     </head>
     <body>
-        <div class="grid center">
-            <canvas id="board" class="game-board"></canvas>
-            <div class="right-column">
-                <button onclick="play()" class="play-button">Play</button>
-            </div>
+        <h1 style="text-align: center;">BATTLOMINO</h1>
+        <h4 style="text-align: center;">A BATTLE WITHOUT HONOR AND HUMANITY</h4>
+        <div class="grid center game-board">
+            <canvas id="board" class=""></canvas>
+        </div>
+        <div class="button-center">
+            <button onclick="play()" class="play-button">Play</button>
         </div>
         <script type="text/javascript" src="./js/constants.js"></script>
+        <script type="text/javascript" src="./js/random.js"></script>
         <script type="text/javascript" src="./js/drawable.js"></script>
+        <script type="text/javascript" src="./js/lineClearEffect.js"></script>
+        <script type="text/javascript" src="./js/animationController.js"></script>
         <script type="text/javascript" src="./js/accountForMatch.js"></script>
         <script type="text/javascript" src="./js/board.js"></script>
         <script type="text/javascript" src="./js/piece.js"></script>
