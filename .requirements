@@ -1,7 +1,9 @@
 -- doing
 [ ] enrich GUI for entertainment
   [ ] key map animation
-    [ ] (soshi)   impl.
+    [v] (soshi)   impl.
+      [v] init btnAnimController
+      [v] add calling setAnimState() to commands
     [ ] (myshmeh) draw btn images
   [ ] improve player 2 key mapping
   [ ] how to play in index.html

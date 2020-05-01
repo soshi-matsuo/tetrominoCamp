@@ -7,12 +7,17 @@ class AccountForMatch extends Drawable {
     currentTurn;
     animationController1;
     animationController2;
+    btnAnimCtrs1;
+    btnAnimCtrs2;
 
     constructor(setTimeLevel, ctx) {
         super(ctx, IN_PRODUCTION);
 
         this.animationController1 = new AnimationController();
         this.animationController2 = new AnimationController();
+
+        this.btnAnimCtrs1 = new Array(5).fill(new AnimationController());
+        this.btnAnimCtrs2 = new Array(5).fill(new AnimationController());
 
         this.loadSpriteSheet('img/spritesheet_5x.png', 8, 2, 240)
             .then(sprites => {
@@ -51,12 +56,27 @@ class AccountForMatch extends Drawable {
                 this.animationController1.connectAnimation('attack', 'idle', (params) => params.getAnimTime() > 600);
                 this.animationController1.connectAnimation('damaged', 'idle', (params) => params.getAnimTime() > 600);
                 this.animationController1.setAnimationState('idle');
+            });
 
-                // btnAnimCont.addAnim('pressed');
-                // btnAnimCont.addAnim('not-pressed');
-                // btnAnimCont.connectAnimation('u-p', 'p', () => time > 200);
-                // btnAnimCont.setAnimationState('not-pressed');
-                // .. 10x
+        this.loadSpriteSheet('', 10, 2, 240)
+            .then(sprites => {
+                const keyMap = ['Up', 'Left', 'Down', 'Right', 'Space'];
+                this.btnAnimCtrs1.forEach((ctr, i) => {
+                    ctr.addAnimation(`notPressed${keyMap[i]}`);
+                    ctr.addAnimation(`pressed${keyMap[i]}`);
+                    ctr.setAnimation(`notPressed${keyMap[i]}`, sprites.slice(i, i+1));
+                    ctr.setAnimation(`pressed${keyMap[i]}`, sprites.slice(i+5, i+6));
+                    ctr.connectAnimation(`pressed${keyMap[i]}`, `notPressed${keyMap[i]}`, (params) => params.getAnimTime() > 200);
+                    ctr.setAnimationState(`notPressed${keyMap[i]}`);
+                });
+                this.btnAnimCtrs2.forEach((ctr, i) => {
+                    ctr.addAnimation(`notPressed${keyMap[i]}`);
+                    ctr.addAnimation(`pressed${keyMap[i]}`);
+                    ctr.setAnimation(`notPressed${keyMap[i]}`, sprites.slice(i+10, i+11));
+                    ctr.setAnimation(`pressed${keyMap[i]}`, sprites.slice(i+15, i+16));
+                    ctr.connectAnimation(`pressed${keyMap[i]}`, `notPressed${keyMap[i]}`, (params) => params.getAnimTime() > 200);
+                    ctr.setAnimationState(`notPressed${keyMap[i]}`);
+                });
             });
 
         this.resetAccount();
