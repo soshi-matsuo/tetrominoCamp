@@ -16,8 +16,8 @@ class AccountForMatch extends Drawable {
         this.animationController1 = new AnimationController();
         this.animationController2 = new AnimationController();
 
-        this.btnAnimCtrs1 = new Array(5).fill(new AnimationController());
-        this.btnAnimCtrs2 = new Array(5).fill(new AnimationController());
+        this.btnAnimCtrs1 = {};
+        this.btnAnimCtrs2 = {};
 
         this.loadSpriteSheet('img/spritesheet_5x.png', 8, 2, 240)
             .then(sprites => {
@@ -58,25 +58,28 @@ class AccountForMatch extends Drawable {
                 this.animationController1.setAnimationState('idle');
             });
 
-        this.loadSpriteSheet('', 10, 2, 240)
+        this.loadSpriteSheet('img/spreadsheet_buttons_2x.png', 5, 4, 64)
             .then(sprites => {
-                const keyMap = ['Up', 'Left', 'Down', 'Right', 'Space'];
-                this.btnAnimCtrs1.forEach((ctr, i) => {
-                    ctr.addAnimation(`notPressed${keyMap[i]}`);
-                    ctr.addAnimation(`pressed${keyMap[i]}`);
-                    ctr.setAnimation(`notPressed${keyMap[i]}`, sprites.slice(i, i+1));
-                    ctr.setAnimation(`pressed${keyMap[i]}`, sprites.slice(i+5, i+6));
-                    ctr.connectAnimation(`pressed${keyMap[i]}`, `notPressed${keyMap[i]}`, (params) => params.getAnimTime() > 200);
-                    ctr.setAnimationState(`notPressed${keyMap[i]}`);
-                });
-                this.btnAnimCtrs2.forEach((ctr, i) => {
-                    ctr.addAnimation(`notPressed${keyMap[i]}`);
-                    ctr.addAnimation(`pressed${keyMap[i]}`);
-                    ctr.setAnimation(`notPressed${keyMap[i]}`, sprites.slice(i+10, i+11));
-                    ctr.setAnimation(`pressed${keyMap[i]}`, sprites.slice(i+15, i+16));
-                    ctr.connectAnimation(`pressed${keyMap[i]}`, `notPressed${keyMap[i]}`, (params) => params.getAnimTime() > 200);
-                    ctr.setAnimationState(`notPressed${keyMap[i]}`);
-                });
+                const keyMap = ['rotate', 'left', 'down', 'right', 'hardDown'];
+                const keyNum = keyMap.length;
+                for (let i =0; i<keyNum; i++) {
+                    this.btnAnimCtrs1[keyMap[i]] = new AnimationController();
+                    this.btnAnimCtrs1[keyMap[i]].addAnimation('notPressed');
+                    this.btnAnimCtrs1[keyMap[i]].addAnimation('pressed');
+                    this.btnAnimCtrs1[keyMap[i]].setAnimationData('notPressed', sprites.slice(i, i+1));
+                    this.btnAnimCtrs1[keyMap[i]].setAnimationData('pressed', sprites.slice(i+5, i+6));
+                    this.btnAnimCtrs1[keyMap[i]].connectAnimation('pressed', 'notPressed', (params) => params.getAnimTime() > 100);
+                    this.btnAnimCtrs1[keyMap[i]].setAnimationState('notPressed');
+                }
+                for (let i =0; i<keyNum; i++) {
+                    this.btnAnimCtrs2[keyMap[i]] = new AnimationController();
+                    this.btnAnimCtrs2[keyMap[i]].addAnimation('notPressed');
+                    this.btnAnimCtrs2[keyMap[i]].addAnimation('pressed');
+                    this.btnAnimCtrs2[keyMap[i]].setAnimationData('notPressed', sprites.slice(i+10, i+11));
+                    this.btnAnimCtrs2[keyMap[i]].setAnimationData('pressed', sprites.slice(i+15, i+16));
+                    this.btnAnimCtrs2[keyMap[i]].connectAnimation('pressed', 'notPressed', (params) => params.getAnimTime() > 100);
+                    this.btnAnimCtrs2[keyMap[i]].setAnimationState('notPressed');
+                }
             });
 
         this.resetAccount();
@@ -168,6 +171,12 @@ class AccountForMatch extends Drawable {
     update() {
         this.animationController1.update();
         this.animationController2.update();
+        for(let key in this.btnAnimCtrs1) {
+            this.btnAnimCtrs1[key].update();
+        }
+        for(let key in this.btnAnimCtrs2) {
+            this.btnAnimCtrs2[key].update();
+        }
     }
 
     drawTurn() {
@@ -178,7 +187,9 @@ class AccountForMatch extends Drawable {
             KEY_MAP_HEIGHT,
             'TURN'
         );
-        this.drawText("TURN", TURN_X, TURN_Y, 20, 'black', 'center');
+        this.drawStrokeRect(TURN_X - 80, TURN_Y + 10, 160, 120, 5, BLACK);
+        this.drawFillRect(TURN_X - 45, TURN_Y - 15, 90, 30, 'white');
+        this.drawText("TURN", TURN_X, TURN_Y, 20, BLACK, 'center');
         switch(this.currentTurn) {
             case TURN.PLAYER1:
                 this.drawImage(this.animationController1.getSpecifiedSprite('face', 0), TURN_AVATOR_X, TURN_AVATOR_Y + 30);
@@ -200,7 +211,9 @@ class AccountForMatch extends Drawable {
             KEY_MAP_HEIGHT,
             'NEXT'
         );
-        this.drawText("NEXT", NEXT_X, NEXT_Y, 20, 'black', 'center');
+        this.drawStrokeRect(NEXT_X - 80, NEXT_Y + 10, 160, 120, 5, BLACK);
+        this.drawFillRect(NEXT_X - 45, NEXT_Y - 15, 85, 30, 'white');
+        this.drawText("NEXT", NEXT_X, NEXT_Y, 20, BLACK, 'center');
     }
     
     drawPlayer1() {
@@ -215,7 +228,8 @@ class AccountForMatch extends Drawable {
             `HP`,
             PLAYER1_HP_X,
             PLAYER1_HP_Y,
-            20
+            20,
+            BLACK
         );
         const player1HPHeight = this.player1HP / MAX_HP * PLAYER_HPBAR_HEIGHT;
         this.drawFillRect(
@@ -250,7 +264,8 @@ class AccountForMatch extends Drawable {
             `HP`,
             PLAYER2_HP_X,
             PLAYER2_HP_Y,
-            20
+            20,
+            BLACK
         );
         const player2HPHeight = this.player2HP / MAX_HP * PLAYER_HPBAR_HEIGHT;
         this.drawFillRect(
@@ -273,6 +288,12 @@ class AccountForMatch extends Drawable {
             this.drawImage(this.animationController2.getCurrentSprite(), PLAYER2_X, PLAYER2_Y);
     }
 
+    drawButtonAnimation(buttonAnimationController, description, x, y, textXBuffer, textYBuffer) {
+        if (buttonAnimationController?.getCurrentSprite())
+            this.drawImage(buttonAnimationController.getCurrentSprite(), x, y);
+        this.drawText(description, x + textXBuffer, y + textYBuffer, 11, BLACK, 'center');
+    }
+
     drawKeyMapPlayer1() {
         this.drawGuideBoxOnDebug(
             0,
@@ -281,18 +302,16 @@ class AccountForMatch extends Drawable {
             KEY_MAP_HEIGHT,
             'KEY MAP (PLAYER 1)'
         );
-        this.drawText(
-            `left: ←, right: →, down: ↓`,
-            0,
-            BOARD_SCREEN_HEIGHT + 50,
-            12
-        );
-        this.drawText(
-            `hard drop: [space], rotate: ↑`,
-            0,
-            BOARD_SCREEN_HEIGHT + 50 + 12,
-            12
-        );
+        const x = 30;
+        const y = 620;
+        const buttonSize = 70;
+        const rowSpace = -10;
+        const textYBuffer = 10;
+        this.drawButtonAnimation(this.btnAnimCtrs1['left'], '[left]', x, y, buttonSize * 0.5, textYBuffer);
+        this.drawButtonAnimation(this.btnAnimCtrs1['rotate'], '[up]', x + buttonSize, y, buttonSize * 0.5, textYBuffer);
+        this.drawButtonAnimation(this.btnAnimCtrs1['right'], '[right]', x + buttonSize * 2, y, buttonSize * 0.5, textYBuffer);
+        this.drawButtonAnimation(this.btnAnimCtrs1['down'], '[down]', x + buttonSize * 1.5, y + buttonSize + rowSpace, buttonSize * 0.5, textYBuffer);
+        this.drawButtonAnimation(this.btnAnimCtrs1['hardDown'], '[space]', x + buttonSize * 2.5, y + buttonSize + rowSpace, buttonSize * 0.5, textYBuffer);
     }
 
     drawKeyMapPlayer2() {
@@ -303,18 +322,16 @@ class AccountForMatch extends Drawable {
             KEY_MAP_HEIGHT,
             'KEY MAP (PLAYER 2)'
         );
-        this.drawText(
-            `left: a, right: d, down: s`,
-            KEY_MAP_WIDTH,
-            BOARD_SCREEN_HEIGHT + 50,
-            12
-        );
-        this.drawText(
-            `hard drop: c, rotate: w`,
-            KEY_MAP_WIDTH,
-            BOARD_SCREEN_HEIGHT + 50 + 12,
-            12
-        );
+        const x = SCREEN_WIDTH - 64 - 30;
+        const y = 620;
+        const buttonSize = 70;
+        const rowSpace = -10;
+        const textYBuffer = 10;
+        this.drawButtonAnimation(this.btnAnimCtrs2['left'], 'A', x - buttonSize * 2, y, buttonSize * 0.5, textYBuffer);
+        this.drawButtonAnimation(this.btnAnimCtrs2['rotate'], 'W', x - buttonSize, y, buttonSize * 0.5, textYBuffer);
+        this.drawButtonAnimation(this.btnAnimCtrs2['right'], 'D', x, y, buttonSize * 0.5, textYBuffer);
+        this.drawButtonAnimation(this.btnAnimCtrs2['down'], 'S', x - buttonSize * 2.5, y + buttonSize + rowSpace, buttonSize * 0.5, textYBuffer);
+        this.drawButtonAnimation(this.btnAnimCtrs2['hardDown'], 'C', x - buttonSize * 1.5, y + buttonSize + rowSpace, buttonSize * 0.5, textYBuffer);
     }
 
     draw() {
