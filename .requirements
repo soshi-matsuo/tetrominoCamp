@@ -1,12 +1,6 @@
 -- doing
 [ ] enrich GUI for entertainment
-  [ ] key map animation
-    [v] (soshi)   impl.
-      [v] init btnAnimController
-      [v] add calling setAnimState() to commands
-    [ ] (myshmeh) draw btn images
-  [ ] improve player 2 key mapping
-  [ ] how to play in index.html
+  [ ] how to play in itch.io
 
 -- to do
 対人戦に対応させたい
@@ -99,6 +93,12 @@
     [v] gameover
   [v] animation on clear line
   [v] fix PLAY button layout
+  [v] key map animation
+  [v] (soshi)   impl.
+    [v] init btnAnimController
+    [v] add calling setAnimState() to commands
+  [v] (myshmeh) draw btn images
+  [v] improve player 2 key mapping
 
 [v] ルールが難しい
   [v] ダメージ固定で良い（行数依存）

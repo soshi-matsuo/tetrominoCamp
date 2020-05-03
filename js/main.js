@@ -93,46 +93,46 @@ class GameMaster extends Drawable {
                 this.board.movePiece(0, 1);
             }).bind(this),
             player1: {
-                up: () => {
+                w: () => {
                     this.board.rotate.bind(this.board)();
                     this.account.btnAnimCtrs1['rotate'].setAnimationState('pressed');
                 },
-                left: () => {
+                a: () => {
                     this.board.movePiece.bind(this.board, -1, 0)();
                     this.account.btnAnimCtrs1['left'].setAnimationState('pressed');
                 },
-                down: () => { 
+                s: () => { 
                     this.commands.softDrop();
                     this.account.btnAnimCtrs1['down'].setAnimationState('pressed');
                 },
-                right: () => {
+                d: () => {
                     this.board.movePiece.bind(this.board, 1, 0)();
                     this.account.btnAnimCtrs1['right'].setAnimationState('pressed');
                 },
-                space: () => { 
+                q: () => { 
                     this.commands.hardDrop();
                     this.account.btnAnimCtrs1['hardDown'].setAnimationState('pressed');
                 },
                 p: this.pause.bind(this)
             },
             player2: {
-                w: () => {
+                i: () => { //rotate
                     this.board.rotate.bind(this.board)();
                     this.account.btnAnimCtrs2['rotate'].setAnimationState('pressed');
                 },
-                a: () => {
+                j: () => {
                     this.board.movePiece.bind(this.board, -1, 0)();
                     this.account.btnAnimCtrs2['left'].setAnimationState('pressed');
                 },
-                s: () => { 
+                k: () => { //drop
                     this.commands.softDrop();
                     this.account.btnAnimCtrs2['down'].setAnimationState('pressed');
                 },
-                d: () => {
+                l: () => {
                     this.board.movePiece.bind(this.board, 1, 0)();
                     this.account.btnAnimCtrs2['right'].setAnimationState('pressed');
                 },
-                c: () => { 
+                o: () => { 
                     this.commands.hardDrop();
                     this.account.btnAnimCtrs2['hardDown'].setAnimationState('pressed');
                 },

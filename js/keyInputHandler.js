@@ -10,39 +10,39 @@ class KeyInputHandler {
                 this.commands.p?.();
             }
 
-            if (event.keyCode === KEY.UP) {
-                this.commands.up?.();
+            if (event.keyCode === KEY.I) {
+                this.commands.i?.();
             }
             if (event.keyCode === KEY.W) {
                 this.commands.w?.();
             }
 
-            if (event.keyCode === KEY.DOWN) {
-                this.commands.down?.();
+            if (event.keyCode === KEY.K) {
+                this.commands.k?.();
             }
             if (event.keyCode === KEY.S) {
                 this.commands.s?.();
             }
 
-            if (event.keyCode === KEY.LEFT) {
-                this.commands.left?.();
+            if (event.keyCode === KEY.J) {
+                this.commands.j?.();
             }
             if (event.keyCode === KEY.A) {
                 this.commands.a?.();
             }
 
-            if (event.keyCode === KEY.RIGHT) {
-                this.commands.right?.();
+            if (event.keyCode === KEY.L) {
+                this.commands.l?.();
             }
             if (event.keyCode === KEY.D) {
                 this.commands.d?.();
             }
 
-            if (event.keyCode === KEY.SPACE) {
-                this.commands.space?.();
+            if (event.keyCode === KEY.O) {
+                this.commands.o?.();
             }
-            if (event.keyCode === KEY.C) {
-                this.commands.c?.();
+            if (event.keyCode === KEY.Q) {
+                this.commands.q?.();
             }
         };
         document.addEventListener('keydown', this.listner);

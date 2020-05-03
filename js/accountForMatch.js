@@ -303,15 +303,15 @@ class AccountForMatch extends Drawable {
             'KEY MAP (PLAYER 1)'
         );
         const x = 30;
-        const y = 620;
+        const y = 610;
         const buttonSize = 70;
         const rowSpace = -10;
         const textYBuffer = 10;
-        this.drawButtonAnimation(this.btnAnimCtrs1['left'], '[left]', x, y, buttonSize * 0.5, textYBuffer);
-        this.drawButtonAnimation(this.btnAnimCtrs1['rotate'], '[up]', x + buttonSize, y, buttonSize * 0.5, textYBuffer);
-        this.drawButtonAnimation(this.btnAnimCtrs1['right'], '[right]', x + buttonSize * 2, y, buttonSize * 0.5, textYBuffer);
-        this.drawButtonAnimation(this.btnAnimCtrs1['down'], '[down]', x + buttonSize * 1.5, y + buttonSize + rowSpace, buttonSize * 0.5, textYBuffer);
-        this.drawButtonAnimation(this.btnAnimCtrs1['hardDown'], '[space]', x + buttonSize * 2.5, y + buttonSize + rowSpace, buttonSize * 0.5, textYBuffer);
+        this.drawButtonAnimation(this.btnAnimCtrs1['hardDown'], 'Q', x, y, buttonSize * 0.5, textYBuffer);
+        this.drawButtonAnimation(this.btnAnimCtrs1['rotate'], 'W', x + buttonSize, y, buttonSize * 0.5, textYBuffer);
+        this.drawButtonAnimation(this.btnAnimCtrs1['left'], 'A', x + buttonSize * 0.5, y + buttonSize + rowSpace, buttonSize * 0.5, textYBuffer);
+        this.drawButtonAnimation(this.btnAnimCtrs1['right'], 'D', x + buttonSize * 2.5, y + buttonSize + rowSpace, buttonSize * 0.5, textYBuffer);
+        this.drawButtonAnimation(this.btnAnimCtrs1['down'], 'S', x + buttonSize * 1.5, y + buttonSize + rowSpace, buttonSize * 0.5, textYBuffer);
     }
 
     drawKeyMapPlayer2() {
@@ -323,15 +323,15 @@ class AccountForMatch extends Drawable {
             'KEY MAP (PLAYER 2)'
         );
         const x = SCREEN_WIDTH - 64 - 30;
-        const y = 620;
+        const y = 610;
         const buttonSize = 70;
         const rowSpace = -10;
         const textYBuffer = 10;
-        this.drawButtonAnimation(this.btnAnimCtrs2['left'], 'A', x - buttonSize * 2, y, buttonSize * 0.5, textYBuffer);
-        this.drawButtonAnimation(this.btnAnimCtrs2['rotate'], 'W', x - buttonSize, y, buttonSize * 0.5, textYBuffer);
-        this.drawButtonAnimation(this.btnAnimCtrs2['right'], 'D', x, y, buttonSize * 0.5, textYBuffer);
-        this.drawButtonAnimation(this.btnAnimCtrs2['down'], 'S', x - buttonSize * 2.5, y + buttonSize + rowSpace, buttonSize * 0.5, textYBuffer);
-        this.drawButtonAnimation(this.btnAnimCtrs2['hardDown'], 'C', x - buttonSize * 1.5, y + buttonSize + rowSpace, buttonSize * 0.5, textYBuffer);
+        this.drawButtonAnimation(this.btnAnimCtrs2['rotate'], 'I', x - buttonSize, y, buttonSize * 0.5, textYBuffer);
+        this.drawButtonAnimation(this.btnAnimCtrs2['hardDown'], 'O', x, y, buttonSize * 0.5, textYBuffer);
+        this.drawButtonAnimation(this.btnAnimCtrs2['left'], 'J', x - buttonSize * 2.5, y + buttonSize + rowSpace, buttonSize * 0.5, textYBuffer);
+        this.drawButtonAnimation(this.btnAnimCtrs2['down'], 'K', x - buttonSize * 1.5, y + buttonSize + rowSpace, buttonSize * 0.5, textYBuffer);
+        this.drawButtonAnimation(this.btnAnimCtrs2['right'], 'L', x - buttonSize * 0.5, y + buttonSize + rowSpace, buttonSize * 0.5, textYBuffer);
     }
 
     draw() {

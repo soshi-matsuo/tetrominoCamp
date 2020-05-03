@@ -88,17 +88,18 @@ Object.freeze(TURN);
 const KEY = {
     P: 80,
     // for player1
-    LEFT: 37,
-    RIGHT: 39,
-    DOWN: 40,
-    UP: 38,
-    SPACE: 32,
+    I: 73,
+    J: 74,
+    K: 75,
+    L: 76,
+    O: 79,
+    
     // for player2
     A: 65,
     D: 68,
     S: 83,
     W: 87,
-    C: 67
+    Q: 81,
 };
 Object.freeze(KEY);
 
