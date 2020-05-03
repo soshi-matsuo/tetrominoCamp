@@ -95,46 +95,46 @@ class GameMaster extends Drawable {
             player1: {
                 up: () => {
                     this.board.rotate.bind(this.board)();
-                    this.account.btnAnimCtrs1[0].setAnimState('pressed');
+                    this.account.btnAnimCtrs1['rotate'].setAnimationState('pressed');
                 },
                 left: () => {
                     this.board.movePiece.bind(this.board, -1, 0)();
-                    this.account.btnAnimCtrs1[1].setAnimState('pressed');
+                    this.account.btnAnimCtrs1['left'].setAnimationState('pressed');
                 },
                 down: () => { 
                     this.commands.softDrop();
-                    this.account.btnAnimCtrs1[2].setAnimState('pressed');
+                    this.account.btnAnimCtrs1['down'].setAnimationState('pressed');
                 },
                 right: () => {
                     this.board.movePiece.bind(this.board, 1, 0)();
-                    this.account.btnAnimCtrs1[3].setAnimState('pressed');
+                    this.account.btnAnimCtrs1['right'].setAnimationState('pressed');
                 },
                 space: () => { 
                     this.commands.hardDrop();
-                    this.account.btnAnimCtrs1[4].setAnimState('pressed');
+                    this.account.btnAnimCtrs1['hardDown'].setAnimationState('pressed');
                 },
                 p: this.pause.bind(this)
             },
             player2: {
                 w: () => {
                     this.board.rotate.bind(this.board)();
-                    this.account.btnAnimCtrs2[0].setAnimState('pressed');
+                    this.account.btnAnimCtrs2['rotate'].setAnimationState('pressed');
                 },
                 a: () => {
                     this.board.movePiece.bind(this.board, -1, 0)();
-                    this.account.btnAnimCtrs2[1].setAnimState('pressed');
+                    this.account.btnAnimCtrs2['left'].setAnimationState('pressed');
                 },
                 s: () => { 
                     this.commands.softDrop();
-                    this.account.btnAnimCtrs2[2].setAnimState('pressed');
+                    this.account.btnAnimCtrs2['down'].setAnimationState('pressed');
                 },
                 d: () => {
                     this.board.movePiece.bind(this.board, 1, 0)();
-                    this.account.btnAnimCtrs2[3].setAnimState('pressed');
+                    this.account.btnAnimCtrs2['right'].setAnimationState('pressed');
                 },
                 c: () => { 
                     this.commands.hardDrop();
-                    this.account.btnAnimCtrs2[4].setAnimState('pressed');
+                    this.account.btnAnimCtrs2['hardDown'].setAnimationState('pressed');
                 },
                 p: this.pause.bind(this)
             },

@@ -21,7 +21,7 @@ class Drawable {
         this.ctx.fillText(`x:${x}, y:${y}, w:${width}, h:${height}`, x + textOffsetX, y + fontSize * 2 + textOffsetY);
     }
 
-    drawText(text, x, y, fontSize, color = 'black', align = 'left') {
+    drawText(text, x, y, fontSize, color = BLACK, align = 'left') {
         this.ctx.fillStyle = color;
         this.ctx.font = `${fontSize}px "${FONT_DEFAULT}"`;
         this.ctx.textAlign = align;
@@ -29,7 +29,7 @@ class Drawable {
         this.ctx.fillText(text, x, y_);
     }
 
-    drawStrokeRect(x, y, width, height, lineWidth, lineColor = 'black') {
+    drawStrokeRect(x, y, width, height, lineWidth, lineColor = BLACK) {
         this.ctx.strokeStyle = lineColor;
         this.ctx.lineWidth = lineWidth;
         this.ctx.strokeRect(x, y, width, height);
